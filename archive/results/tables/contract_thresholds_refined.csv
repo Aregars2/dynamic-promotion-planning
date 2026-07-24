@@ -1,0 +1,7 @@
+decision_rule,alpha_threshold
+myopic,2.19
+nominal_dynamic,2.19
+dro,2.24
+oracle_weighted_p10,2.1
+oracle_weighted_median,2.1967391304347825
+oracle_weighted_p90,2.2591666666666663

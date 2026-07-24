@@ -1,0 +1,4 @@
+discount_depth,empirical_support_per_unit,empirical_alpha_equivalent,gap_to_myopic_threshold,gap_to_nominal_dynamic_threshold,gap_to_dro_threshold
+0.1,0.0,0.0,2.2,2.2,2.25
+0.2,0.0,0.0,2.2,2.2,2.25
+0.3,0.0553015976818176,0.18433865893939202,2.0156613410606083,2.0156613410606083,2.065661341060608

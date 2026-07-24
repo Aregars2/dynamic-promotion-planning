@@ -1,0 +1,15 @@
+check_family,specification,nominal_threshold,dro_threshold,threshold_gap
+baseline,persistent_parameter_main,2.1852618233637497,2.24,0.05473817663625047
+structural_design,short_horizon,2.185261199862717,2.24,0.05473880013728305
+structural_design,short_cooldown,2.1852618233637497,2.24,0.05473817663625047
+structural_design,baseline,2.1852618233637497,2.24,0.05473817663625047
+structural_design,long_cooldown,2.1852618233637497,2.24,0.05473817663625047
+structural_design,long_horizon,2.18526247694862,2.24,0.054737523051380244
+behavioral_calibration,baseline,2.1852618233637497,2.24,0.05473817663625047
+behavioral_calibration,no_displacement,2.1852617311258036,2.24,0.05473826887419664
+behavioral_calibration,half_displacement,2.1852618233637497,2.25,0.06473817663625026
+behavioral_calibration,double_displacement,2.1852618233637497,2.25,0.06473817663625026
+behavioral_calibration,low_persistence,2.1852618233637497,2.24,0.05473817663625047
+behavioral_calibration,medium_persistence,2.1852618233637497,2.24,0.05473817663625047
+behavioral_calibration,high_persistence,2.1852618233637497,2.24,0.05473817663625047
+behavioral_calibration,zero_nonprice_lift,2.1291445808859115,2.19,0.06085541911408843

@@ -1,0 +1,9 @@
+Product,Size,Stores,Median weekly sales,Promotion share,Promotion episodes,Isolated episodes,Supported depths (%)
+CHEERIOS,15 OZ,15,48.0,15.7%,465,22,"5\%, 10\%, 25\%"
+CHEERIOS,10 OZ,15,55.0,8.3%,232,26,"5\%, 10\%, 25\%"
+KELLOGGS CORN FLAKES,18 OZ,15,41.0,15.6%,442,45,"5\%, 10\%, 30\%"
+HONEY NUT CHEERIOS,14 OZ,15,41.0,15.8%,440,14,"5\%, 10\%, 25\%"
+KELLOGGS CORN FLAKES,12 OZ,15,48.0,3.5%,93,16,"5\%, 10\%"
+KELLOGG'S FROSTED FL,20 OZ,15,38.0,15.5%,404,2,"5\%, 10\%, 50\%"
+KELLOGGS CORN FLAKE,24 OZ,15,29.0,11.3%,352,68,"5\%, 10\%, 15\%"
+KELLOGGS SPECIAL K,12 OZ,15,42.0,7.5%,223,63,"5\%, 10\%, 40\%"

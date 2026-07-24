@@ -1,0 +1,6 @@
+configuration,horizon,cooldown,max_promotions,discount_factor,schedule_count,nominal_alpha_threshold_exact,dro_alpha_threshold_grid,threshold_gap,dro_promotion_count_at_2_24,dro_total_depth_at_2_24
+short_horizon,8,2,3,0.995,268,2.185261199862717,2.24,0.05473880013728305,1,0.3
+short_cooldown,12,1,4,0.995,13978,2.1852618233637497,2.24,0.05473817663625047,1,0.3
+baseline,12,2,4,0.995,3169,2.1852618233637497,2.24,0.05473817663625047,1,0.3
+long_cooldown,12,3,3,0.995,901,2.1852618233637497,2.24,0.05473817663625047,1,0.3
+long_horizon,16,3,4,0.995,6826,2.18526247694862,2.24,0.054737523051380244,1,0.3

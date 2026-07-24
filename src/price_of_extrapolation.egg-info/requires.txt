@@ -1,0 +1,12 @@
+matplotlib<4,>=3.8
+numpy<3,>=2.0
+pandas<4,>=2.2
+pyarrow<26,>=16
+scikit-learn<2,>=1.4
+scipy<2,>=1.12
+statsmodels<0.15,>=0.14
+
+[dev]
+jupyterlab<5,>=4.2
+nbformat<6,>=5.10
+pytest<9,>=8

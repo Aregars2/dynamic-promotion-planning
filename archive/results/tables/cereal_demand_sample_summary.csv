@@ -1,0 +1,11 @@
+,value
+rows,5125945.0
+stores,86.0
+products,461.0
+store_upc_pairs,34519.0
+weeks,358.0
+zero_sales_share,0.1214685292175394
+imputed_price_share,0.1214685292175394
+recorded_promo_share,0.06594198728234502
+post_promo_share,0.04623362131275306
+excluded_sales_outliers,50.0

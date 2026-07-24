@@ -1,0 +1,11 @@
+,value
+validated_prices,196427.0
+median_absolute_error,0.0
+median_absolute_percentage_error,0.0
+mean_absolute_percentage_error,0.016743935079290777
+mean_percentage_error,0.004559884504834263
+rmse,0.1239180276755055
+within_5_percent,0.8563639418206255
+within_10_percent,0.9824616778752412
+p95_absolute_percentage_error,0.07954545454545453
+p99_absolute_percentage_error,0.11933174224343682

@@ -1,0 +1,78 @@
+relative_path,size_mb,extension,decision,reason
+data/processed/product_stockpiling_behavioral_draws.pkl,0.6752347946166992,.pkl,archive_legacy_intermediate,Legacy intermediate retained only until the canonical pipeline has been rerun successfully.
+data/processed/isolated_promotion_events.pkl,0.5905513763427734,.pkl,archive_legacy_intermediate,Legacy intermediate retained only until the canonical pipeline has been rerun successfully.
+data/processed/product_stockpiling_bootstrap_base.pkl,0.2154293060302734,.pkl,archive_legacy_intermediate,Legacy intermediate retained only until the canonical pipeline has been rerun successfully.
+data/processed/stockpiling_behavioral_draws.pkl,0.1419496536254882,.pkl,archive_legacy_intermediate,Legacy intermediate retained only until the canonical pipeline has been rerun successfully.
+data/processed/stockpiling_behavioral_bootstrap_base.pkl,0.0418281555175781,.pkl,archive_legacy_intermediate,Legacy intermediate retained only until the canonical pipeline has been rerun successfully.
+data/processed/stockpiling_parameter_draws.pkl,0.0354213714599609,.pkl,archive_legacy_intermediate,Legacy intermediate retained only until the canonical pipeline has been rerun successfully.
+data/processed/product_stockpiling_calibration_artifact.pkl,0.0217208862304687,.pkl,archive_legacy_intermediate,Legacy intermediate retained only until the canonical pipeline has been rerun successfully.
+data/processed/reliability_prequential_predictions_revised.pkl,44.265336990356445,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/candidate_price_support_and_predictions.pkl,34.96508312225342,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/support_aware_policy_choices.pkl,17.65947437286377,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/persistent_parameter_dro_artifact.pkl,14.092988014221191,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/local_support_reliability_data_revised.pkl,11.083340644836426,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/price_of_extrapolation_decomposition.pkl,10.345011711120604,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/local_support_reliability_data.pkl,7.131390571594238,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/contract_threshold_policy_artifact_refined.pkl,7.043639183044434,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/contract_threshold_policy_artifact.pkl,5.299277305603027,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/dro_promotion_evaluation_with_funding.pkl,1.6769084930419922,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/dro_promotion_policies_with_funding.pkl,0.5402956008911133,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/dro_promotion_evaluation_revised.pkl,0.3271102905273437,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/dro_promotion_policies_revised.pkl,0.2094898223876953,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/dro_promotion_evaluation.pkl,0.1480188369750976,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/dro_promotion_policies.pkl,0.0706663131713867,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/robustness_bootstrap_draws.pkl,0.0238828659057617,.pkl,archive_methodological_extension,Belongs to the earlier support-aware/DRO research direction or robustness extension.
+data/processed/product_schedule_artifact_unrestricted.pkl,105.3457145690918,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/product_schedule_artifact_common_0_30_w6.pkl,105.28478717803956,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/product_schedule_frontier_artifact.pkl,102.05025100708008,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/product_schedule_artifact_empirical_w0.pkl,99.00530910491943,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/product_schedule_artifact_supported.pkl,98.97122955322266,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/product_schedule_artifact_empirical_w6.pkl,98.92065238952635,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/product_schedule_artifact_empirical_w4.pkl,98.92064666748048,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/robustness_cache/short_cooldown_caa38ded1f76.pkl,61.74731922149658,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/robustness_cache/long_horizon_66f3da430fbd.pkl,30.362229347229004,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/robustness_cache/behavioral_double_displacement_f8765ec3f372.pkl,13.999430656433104,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/robustness_cache/behavioral_medium_persistence_af93b58c70bf.pkl,13.999429702758787,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/robustness_cache/behavioral_zero_nonprice_lift_8b7269131751.pkl,13.999429702758787,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/robustness_cache/behavioral_half_displacement_432421bf88a6.pkl,13.999428749084473,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/robustness_cache/behavioral_high_persistence_c43067974c5c.pkl,13.999427795410156,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/robustness_cache/behavioral_low_persistence_a253ed2e6e52.pkl,13.99942684173584,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/robustness_cache/behavioral_no_displacement_84cb1ae99dfa.pkl,13.99942684173584,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/robustness_cache/long_cooldown_8c3616ad9b58.pkl,3.980698585510254,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/corrected_schedule_system_w0.pkl,2.293663024902344,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_system_w8.pkl,2.287788391113281,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_system_w10.pkl,2.286933898925781,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_system_w6.pkl,2.2867202758789062,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_system_w12.pkl,2.2865066528320312,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_system_w4.pkl,2.281646728515625,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_demand_only_full_grid_w12.pkl,2.253608703613281,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/boundary_validation_schedule_system_b2_a2.40_2.65_s0.01_w12.pkl,2.21234130859375,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_support_schedule_system_n15_w12.pkl,2.181572914123535,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_support_schedule_system_n10_w12.pkl,2.181572914123535,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_demand_only_washout_check_w12.pkl,2.177720069885254,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_demand_only_washout_check_w4.pkl,2.177720069885254,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_demand_only_washout_check_w8.pkl,2.177720069885254,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_demand_only_washout_check_w0.pkl,2.177720069885254,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_demand_only_washout_check_w10.pkl,2.177720069885254,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_schedule_demand_only_washout_check_w6.pkl,2.177720069885254,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_support_schedule_system_n30_w12.pkl,1.9731712341308596,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/corrected_support_schedule_system_n25_w12.pkl,1.9731712341308596,.pkl,delete_regenerable_cache,Enumerated schedule system or frontier cache; expensive but fully regenerable.
+data/processed/robustness_cache/short_horizon_904b59d19f83.pkl,1.1762847900390625,.pkl,delete_regenerable_cache,Robustness scenario cache; regenerated by archived robustness notebooks.
+data/processed/cereal_demand_data.parquet,30.76648330688477,.parquet,keep_stable_processed_data,Stable processed dataset or manifest used by the active empirical pipeline.
+data/processed/cereal_demand_model_data.parquet,30.746649742126465,.parquet,keep_stable_processed_data,Stable processed dataset or manifest used by the active empirical pipeline.
+data/processed/paper_selected_sample.parquet,0.2060918807983398,.parquet,keep_stable_processed_data,Stable processed dataset or manifest used by the active empirical pipeline.
+data/processed/paper_isolated_event_windows_with_ppml_baseline.parquet,0.1029520034790039,.parquet,keep_stable_processed_data,Stable processed dataset or manifest used by the active empirical pipeline.
+data/processed/cereal_sales_outliers.parquet,0.0269460678100585,.parquet,keep_stable_processed_data,Stable processed dataset or manifest used by the active empirical pipeline.
+data/processed/cereal_product_lookup.parquet,0.0080776214599609,.parquet,keep_stable_processed_data,Stable processed dataset or manifest used by the active empirical pipeline.
+data/processed/paper_selected_sample_manifest.json,0.000152587890625,.json,keep_stable_processed_data,Stable processed dataset or manifest used by the active empirical pipeline.
+data/processed/.gitkeep,0.0,,manual_review,Not in the final artifact registry; inspect producer/consumer before deleting.
+data/processed/final_demand_model_predictions.pkl,7.219526290893555,.pkl,migrate_to_canonical_artifact_path,Final empirical artifact; renamed and moved under artifacts/.
+data/processed/corrected_policy_optimization_artifact.pkl,3.906259536743164,.pkl,migrate_to_canonical_artifact_path,Final empirical artifact; renamed and moved under artifacts/.
+data/processed/boundary_validation_artifact.pkl,2.3372373580932617,.pkl,migrate_to_canonical_artifact_path,Final empirical artifact; renamed and moved under artifacts/.
+data/processed/product_stockpiling_behavioral_draws_v2.pkl,0.6752347946166992,.pkl,migrate_to_canonical_artifact_path,Final empirical artifact; renamed and moved under artifacts/.
+data/processed/product_promotion_prediction_context.pkl,0.5640172958374023,.pkl,migrate_to_canonical_artifact_path,Final empirical artifact; renamed and moved under artifacts/.
+data/processed/policy_regimes_and_support_artifact.pkl,0.1077451705932617,.pkl,migrate_to_canonical_artifact_path,Final empirical artifact; renamed and moved under artifacts/.
+data/processed/product_supported_action_sets.pkl,0.0133543014526367,.pkl,migrate_to_canonical_artifact_path,Final empirical artifact; renamed and moved under artifacts/.
+data/processed/product_stockpiling_calibration_artifact_v2.pkl,0.0015640258789062,.pkl,migrate_to_canonical_artifact_path,Final empirical artifact; renamed and moved under artifacts/.
+data/processed/isolated_promotion_events_revised.pkl,0.7639846801757812,.pkl,remove_versioned_duplicate_after_migration,Superseded version-suffixed output; canonical producer now overwrites one stable path.
+data/processed/product_stockpiling_bootstrap_base_v2.pkl,0.2154293060302734,.pkl,remove_versioned_duplicate_after_migration,Superseded version-suffixed output; canonical producer now overwrites one stable path.

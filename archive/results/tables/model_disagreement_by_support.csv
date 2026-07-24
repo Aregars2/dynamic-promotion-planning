@@ -1,0 +1,11 @@
+evaluation_split,support_state,nominal_price_is_unsupported,decisions,mean_disagreement,median_disagreement,q90_disagreement
+policy_calibration,post_promotion,False,376,0.03844052143663259,0.0,0.16399412055647922
+policy_calibration,post_promotion,True,29,0.0,0.0,0.0
+policy_calibration,promotion,False,959,0.2466871133385955,0.0,0.905435600970512
+policy_calibration,promotion,True,37,0.0,0.0,0.0
+policy_calibration,regular,False,6360,0.04098247444712158,0.0,0.16375317584693683
+test,post_promotion,False,609,0.021975785602408635,0.0,0.05657005644225108
+test,post_promotion,True,12,0.0032320297022360536,0.0,0.009481832061519313
+test,promotion,False,1101,0.24594657355611002,0.07901532343814388,0.8048945194160053
+test,promotion,True,11,0.024204110941049028,0.0,0.0
+test,regular,False,6617,0.05118354314714239,0.0,0.20794807283511166

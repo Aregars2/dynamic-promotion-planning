@@ -1,0 +1,4 @@
+decision_rule,persistent_alpha_threshold,rectangular_alpha_threshold,persistent_minus_rectangular
+myopic,2.19,2.19,0.0
+nominal_dynamic,2.19,2.19,0.0
+persistent_dro,2.24,2.24,0.0

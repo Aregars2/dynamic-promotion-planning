@@ -1,0 +1,7 @@
+decision_rule,alpha_threshold,threshold_found_within_grid
+myopic,2.2,True
+nominal_dynamic,2.2,True
+dro,2.25,True
+oracle_weighted_p10,2.1,True
+oracle_weighted_median,2.211764705882353,True
+oracle_weighted_p90,2.3,True

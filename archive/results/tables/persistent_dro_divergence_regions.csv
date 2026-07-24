@@ -1,0 +1,4 @@
+divergence_type,alpha_start,alpha_end,grid_points
+same_schedule,2.1,2.185,18
+nominal_promotes_dro_waits,2.19,2.235,10
+both_promote_different_schedule,2.24,2.5,53

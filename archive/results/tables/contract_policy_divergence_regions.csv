@@ -1,0 +1,5 @@
+divergence_type,alpha_start,alpha_end,grid_points
+same,0.0,2.15,44
+nominal_promotes_dro_waits,2.2,2.2,1
+both_promote_different_policy,2.25,2.4,4
+same,2.45,3.0,12

@@ -1,0 +1,4 @@
+split,rows,weeks,products,stores,panels,start_date,end_date
+train,25006,214,8,15,120,1989-10-12,1993-11-17
+calibration,8639,72,8,15,120,1993-11-25,1995-12-06
+test,8640,72,8,15,120,1995-12-07,1997-05-07

@@ -1,0 +1,8 @@
+decision,files,size_mb
+delete_regenerable_cache,36,943.3261404037476
+archive_methodological_extension,16,154.88191413879395
+keep_stable_processed_data,7,61.85735321044922
+migrate_to_canonical_artifact_path,8,14.824938774108887
+archive_legacy_intermediate,7,1.722135543823242
+remove_versioned_duplicate_after_migration,2,0.9794139862060547
+manual_review,1,0.0

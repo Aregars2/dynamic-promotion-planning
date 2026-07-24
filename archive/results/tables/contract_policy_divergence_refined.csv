@@ -1,0 +1,4 @@
+divergence_type,alpha_start,alpha_end,grid_points,maximum_disagreement_share
+same_realized_path,2.1,2.185,18,0.0
+nominal_promotes_dro_waits,2.19,2.235,10,1.0000000000000002
+both_promote_different_path,2.24,2.5,53,1.0000000000000002

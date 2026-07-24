@@ -1,3 +1,22 @@
+Metadata-Version: 2.4
+Name: price-of-extrapolation
+Version: 0.1.0
+Summary: Dynamic promotion planning under demand displacement and empirical action support
+Author: Jan Zasadil
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: matplotlib<4,>=3.8
+Requires-Dist: numpy<3,>=2.0
+Requires-Dist: pandas<4,>=2.2
+Requires-Dist: pyarrow<26,>=16
+Requires-Dist: scikit-learn<2,>=1.4
+Requires-Dist: scipy<2,>=1.12
+Requires-Dist: statsmodels<0.15,>=0.14
+Provides-Extra: dev
+Requires-Dist: jupyterlab<5,>=4.2; extra == "dev"
+Requires-Dist: nbformat<6,>=5.10; extra == "dev"
+Requires-Dist: pytest<9,>=8; extra == "dev"
+
 # The Price of Extrapolation
 
 ## Dynamic promotion planning under demand displacement

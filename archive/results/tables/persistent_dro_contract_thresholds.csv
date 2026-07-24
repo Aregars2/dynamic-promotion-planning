@@ -1,0 +1,8 @@
+decision_rule,alpha_threshold_grid,grid_step
+myopic,2.19,0.005
+nominal_dynamic,2.19,0.005
+persistent_dro,2.24,0.005
+nominal_dynamic_exact,2.1852618233637497,
+oracle_weighted_p10,2.0738816797156607,
+oracle_weighted_median,2.1851575509075127,
+oracle_weighted_p90,2.253738929171299,

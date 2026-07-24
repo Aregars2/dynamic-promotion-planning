@@ -1,0 +1,11 @@
+stage,products_remaining
+Products in cleaned sample,344
+adequate_train_weeks,175
+adequate_calibration_weeks,133
+adequate_test_weeks,106
+adequate_store_coverage,105
+adequate_distinct_prices,105
+adequate_promotions,105
+adequate_regular_rows,105
+acceptable_imputation,97
+adequate_price_range,97

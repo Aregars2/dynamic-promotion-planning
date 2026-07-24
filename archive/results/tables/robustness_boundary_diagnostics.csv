@@ -1,0 +1,5 @@
+diagnostic,share
+nominal_spline_clipped,0.0015568862275449102
+nominal_at_lower_decision_boundary,0.9983233532934132
+nominal_at_upper_decision_boundary,0.5594011976047905
+nominal_at_either_decision_boundary,0.9983233532934132

@@ -1,0 +1,5 @@
+n_decisions,nominal_unsupported_share,mean_price_of_extrapolation,aggregate_unsupported_share,support_disagreement_spearman,sample,retained_decision_share
+8350.0,0.01652694610778443,0.9349447143825538,0.056162321774793036,-0.4285909977178596,full_sample,1.0
+8337.0,0.016552716804605974,0.9364025866731827,0.05817317068572777,-0.4253850171178607,exclude_spline_clipped_nominal,0.9984431137724551
+14.0,0.0,0.0,0.0,-0.22637362637362637,exclude_decision_grid_boundaries,0.0016766467065868263
+1.0,0.0,0.0,0.0,,exclude_clipped_and_boundaries,0.00011976047904191617
