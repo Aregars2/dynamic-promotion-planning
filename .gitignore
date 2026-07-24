@@ -216,3 +216,22 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+/data/raw/*
+/data/processed/*
+/results/artifacts/*
+
+!/data/raw/.gitkeep
+!/data/processed/.gitkeep
+!/results/artifacts/.gitkeep
+
+/results/artifacts/**
+/results/models/**
+/results/figures/**
+/results/tables/**
+
+!/results/artifacts/.gitkeep
+!/results/models/.gitkeep
+!/results/figures/.gitkeep
+!/results/tables/.gitkeep

@@ -1,0 +1,3 @@
+grid_name,weekly_capacity,alpha,value_of_dynamic_optimization,relative_VDO,dynamic_active_product_set,myopic_active_product_set,active_set_changed,active_set_symmetric_difference,product_promotion_count_disagreement,product_week_timing_disagreement,dynamic_binding_weeks,myopic_binding_weeks,dynamic_supported_share,myopic_supported_share,decision_horizon,washout_horizon,evaluation_horizon
+common_0_30_w6,2,2.24,0.5663851308900121,0.0002069025527982,1600066510|3800000110|3800000120|3800000127,1600066510|3800000110|3800000120|3800000127,False,0,0,8,6,8,0.5,0.5,12,6,18
+empirical_w6,2,2.24,0.4423638635553288,0.0001540891702601,1600066510|3800000110|3800000120|3800000127,1600066510|3800000110|3800000120|3800000127,False,0,0,12,6,8,1.0,1.0,12,6,18
