@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+title: "Dynamic Promotion Planning under Demand Displacement"
+message: "Please cite this repository using the metadata below."
+type: software
+authors:
+  - family-names: Zasadil
+    given-names: Jan
+version: 0.3.0
+date-released: 2026-07-28
+repository-code: "https://github.com/Aregars2/dynamic-promotion-planning"
+license: MIT

@@ -1,0 +1,9 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2026 Jan Zasadil
+
+The paper text, documentation, notebook narrative, figures, and tables in this
+repository are licensed under CC BY 4.0 unless otherwise stated.
+
+SPDX-License-Identifier: CC-BY-4.0
+Legal code: https://creativecommons.org/licenses/by/4.0/legalcode

@@ -1,0 +1,99 @@
+# Canonical configuration used by the active empirical notebooks.
+
+[sample]
+excluded_weeks = [219]
+non_cereal_upcs = [317]
+discount_threshold = 0.05
+regular_price_window = "91D"
+regular_price_min_periods = 4
+regular_price_quantile = 0.90
+sales_outlier_min_move = 1000
+sales_outlier_min_stores = 20
+sales_outlier_min_p95_ratio = 10.0
+parquet_compression = "zstd"
+random_seed = 42
+
+[demand]
+n_products = 8
+train_share = 0.60
+calibration_share = 0.20
+min_product_train_weeks = 100
+min_product_calibration_weeks = 40
+min_product_test_weeks = 40
+min_product_train_stores = 10
+min_product_distinct_prices = 8
+min_product_promotion_rows = 30
+min_product_regular_rows = 100
+max_product_imputed_share = 0.25
+min_product_relative_price_range = 0.10
+min_store_train_weeks = 100
+min_store_calibration_weeks = 40
+min_store_test_weeks = 40
+min_product_coverage_share = 0.75
+min_panel_train_weeks = 100
+min_panel_calibration_weeks = 30
+min_panel_test_weeks = 30
+refit_every_n_weeks = 4
+discount_depth_is_percent = false
+
+[behavioral]
+primary_model = "product_promotion"
+bootstrap_replications = 1000
+event_pre_weeks = 4
+event_post_weeks = 6
+pre_event_weeks = [-3, -2, -1]
+post_lags_for_calibration = [1, 2, 3, 4]
+minimum_calibration_discount = 0.05
+minimum_isolated_events = 40
+minimum_depth_events = 80
+minimum_common_panels = 4
+shrinkage_event_scale = 30.0
+shrinkage_panel_scale = 6.0
+holdout_pre_weeks = 3
+holdout_post_weeks = 4
+event_study_interval = [0.05, 0.95]
+elasticity_bounds = [0.10, 5.00]
+promotion_lift_bounds = [-1.00, 3.00]
+displacement_bounds = [0.0, 3.0]
+persistence_bounds = [0.05, 0.95]
+minimum_persistence_signal = 0.05
+maximum_persistence_slope_ratio = 1.25
+persistence_partial_identification_grid = [0.15, 0.35, 0.60]
+gross_margin_column = "gross_margin_pct_observed"
+minimum_valid_margin = -1.0
+maximum_valid_margin = 0.95
+
+[policy]
+decision_horizon = 12
+washout_horizons = [36]
+cooldown_weeks = 2
+discount_factor = 1
+reimbursement_grid_start = 0.00
+reimbursement_grid_stop = 1.00
+# Candidate schedules are pruned only after evaluation on this grid.  A 0.05
+# grid can omit a schedule that is optimal solely between adjacent points, so
+# use the 0.01 transition grid for both pruning and reported policy curves.
+reimbursement_grid_step = 0.01
+weekly_capacities = [1, 2, 3, 8]
+economic_profile = "weekly_predicted_demand_fixed_product_price_cost"
+# Policy profiles use one PPML fit before the planning episode; policies start
+# from no inherited promotion state or cooldown at the planning origin.
+forecast_information_mode = "ex_ante_common_origin"
+initial_conditions = "fresh_start"
+
+[support]
+bin_width = 0.05
+minimum_depth = 0.05
+maximum_depth = 0.60
+minimum_observations = 15
+minimum_panels = 3
+maximum_positive_actions = 3
+
+[boundary_validation]
+reimbursement_start = 0.00
+reimbursement_stop = 1.00
+reimbursement_step = 0.01
+
+[sensitivity.regular_price]
+# Rebuild the complete pipeline for each value; 0.90 is the main specification.
+quantiles = [0.80, 0.90, 0.95]

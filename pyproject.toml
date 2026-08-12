@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dynamic-promotion-planning"
+version = "0.3.0"
+description = "Dynamic promotion planning under demand displacement"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "Jan Zasadil"}]
+license = {text = "MIT"}
+keywords = [
+    "dynamic pricing",
+    "promotion planning",
+    "retail analytics",
+    "counterfactual policy evaluation",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+    "matplotlib>=3.8,<4",
+    "numpy>=2.0,<3",
+    "pandas>=2.2,<4",
+    "pyarrow>=16,<26",
+    "scikit-learn>=1.4,<2",
+    "scipy>=1.12,<2",
+    "statsmodels>=0.14,<0.15",
+]
+
+[project.optional-dependencies]
+dev = [
+    "jupyterlab>=4.2,<5",
+    "nbformat>=5.10,<6",
+    "pytest>=8,<9",
+]
+
+[project.urls]
+Repository = "https://github.com/Aregars2/dynamic-promotion-planning"
+Issues = "https://github.com/Aregars2/dynamic-promotion-planning/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+    "integration: checks canonical generated artifacts when available",
+]
