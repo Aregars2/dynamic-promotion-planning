@@ -62,8 +62,6 @@ class BehavioralConfig:
     minimum_isolated_events: int = 40
     minimum_depth_events: int = 80
     minimum_common_panels: int = 4
-    shrinkage_event_scale: float = 30.0
-    shrinkage_panel_scale: float = 6.0
     holdout_pre_weeks: int = 3
     holdout_post_weeks: int = 4
     event_study_interval: tuple[float, float] = (0.05, 0.95)

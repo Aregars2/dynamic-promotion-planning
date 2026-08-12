@@ -31,8 +31,6 @@ class CalibrationConfig:
     min_depth_events: int = 10
     min_common_panels: int = 4
     min_calibration_discount: float = 0.05
-    shrinkage_event_scale: float = 30.0
-    shrinkage_panel_scale: float = 6.0
     persistence_grid: tuple[float, ...] = (0.15, 0.35, 0.60)
     min_persistence_signal: float = 0.05
     max_persistence_slope_ratio: float = 1.25
@@ -972,30 +970,39 @@ def _sample_pooled_draws(
     return pooled_valid.iloc[indices][PARAMETER_COLUMNS].reset_index(drop=True)
 
 
-def _shrinkage_reliability(
+def _legacy_heuristic_reliability(
     depth_event_count: int,
     common_panel_count: int,
     config: CalibrationConfig,
 ) -> float:
+    """Return the retired support-count heuristic for diagnostics only."""
+    del config
     event_reliability = (
-        depth_event_count / (depth_event_count + config.shrinkage_event_scale)
+        depth_event_count / (depth_event_count + 30.0)
         if depth_event_count > 0
         else 0.0
     )
     panel_reliability = (
-        common_panel_count / (common_panel_count + config.shrinkage_panel_scale)
+        common_panel_count / (common_panel_count + 6.0)
         if common_panel_count > 0
         else 0.0
     )
     return float(np.clip(event_reliability * panel_reliability, 0.0, 1.0))
 
 
-def _shrink_product_draws(
+EB_PARAMETERS: dict[str, tuple[str, float, float]] = {
+    "price_elasticity": ("price_elasticity", 0.10, 5.00),
+    "promotion_lift_log": ("promotion_lift_log", -1.00, 3.00),
+    "displacement_strength": ("post1_depth_slope", 0.00, 3.00),
+}
+
+
+def _raw_product_parameter_draws(
     bootstrap: pd.DataFrame,
     pooled_sample: pd.DataFrame,
-    reliability: float,
     config: CalibrationConfig,
 ) -> pd.DataFrame:
+    """Return policy-scale product bootstrap draws, retaining bootstrap IDs."""
     if bootstrap.empty:
         product_base = pooled_sample.copy()
         product_base["product_calibration_source"] = "pooled_fallback"
@@ -1008,35 +1015,96 @@ def _shrink_product_draws(
             * product_base["inventory_persistence"]
         )
     else:
-        product_base = bootstrap.copy()
-        product_base["product_calibration_source"] = "product_bootstrap"
-        for parameter in ["price_elasticity", "promotion_lift_log"]:
-            product_base[parameter] = (
-                reliability * product_base[parameter]
-                + (1.0 - reliability) * pooled_sample[parameter]
+        product_base = bootstrap.sort_values("bootstrap_id").reset_index(drop=True).copy()
+        if len(product_base) != config.bootstrap_replications:
+            raise ValueError(
+                "Product bootstrap does not contain the configured number of draws."
             )
-        product_displacement = (
-            product_base["post1_depth_slope"]
-            .fillna(pooled_sample["displacement_strength"])
-            .clip(0.0, 3.0)
-        )
-        product_base["displacement_strength"] = (
-            reliability * product_displacement
-            + (1.0 - reliability) * pooled_sample["displacement_strength"]
-        )
+        product_base["product_calibration_source"] = "product_bootstrap"
         product_base["inventory_persistence"] = pooled_sample[
             "inventory_persistence"
         ]
 
-    product_base["price_elasticity"] = product_base["price_elasticity"].clip(
-        0.10, 5.00
-    )
-    product_base["promotion_lift_log"] = product_base[
-        "promotion_lift_log"
-    ].clip(-1.00, 3.00)
-    product_base["displacement_strength"] = product_base[
-        "displacement_strength"
-    ].clip(0.00, 3.00)
+    for parameter, (source, lower, upper) in EB_PARAMETERS.items():
+        if source not in product_base:
+            product_base[source] = np.nan
+        fallback = pooled_sample[parameter].to_numpy(dtype=float)
+        raw = product_base[source].to_numpy(dtype=float)
+        product_base[parameter] = np.clip(
+            np.where(np.isfinite(raw), raw, fallback), lower, upper
+        )
+    return product_base
+
+
+def _empirical_bayes_weights(
+    raw_draws_by_product: dict[str, pd.DataFrame],
+) -> tuple[dict[str, dict[str, float]], pd.DataFrame, pd.DataFrame]:
+    """Estimate parameter-specific EB weights from policy-scale bootstrap draws."""
+    products = sorted(raw_draws_by_product)
+    weights: dict[str, dict[str, float]] = {upc: {} for upc in products}
+    detail_rows: list[dict[str, Any]] = []
+    summary_rows: list[dict[str, Any]] = []
+    for parameter in EB_PARAMETERS:
+        means = np.array([
+            raw_draws_by_product[upc][parameter].mean() for upc in products
+        ], dtype=float)
+        within_variances = np.array([
+            raw_draws_by_product[upc][parameter].var(ddof=1) for upc in products
+        ], dtype=float)
+        observed_variance = float(np.var(means, ddof=1)) if len(products) > 1 else 0.0
+        mean_within_variance = float(np.mean(within_variances))
+        tau2 = float(max(0.0, observed_variance - mean_within_variance))
+        parameter_weights = (
+            np.zeros_like(within_variances)
+            if tau2 == 0.0
+            else tau2 / (tau2 + within_variances)
+        )
+        for upc, theta_hat, sampling_variance, weight in zip(
+            products, means, within_variances, parameter_weights, strict=True
+        ):
+            weight_float = float(weight)
+            weights[upc][parameter] = weight_float
+            detail_rows.append(
+                {
+                    "upc": upc,
+                    "parameter": parameter,
+                    "theta_hat": float(theta_hat),
+                    "bootstrap_variance": float(sampling_variance),
+                    "bootstrap_standard_error": float(np.sqrt(sampling_variance)),
+                    "tau2": tau2,
+                    "eb_weight": weight_float,
+                }
+            )
+        summary_rows.append(
+            {
+                "parameter": parameter,
+                "products": len(products),
+                "observed_cross_product_variance": observed_variance,
+                "mean_within_product_bootstrap_variance": mean_within_variance,
+                "tau2": tau2,
+                "tau2_at_zero": bool(tau2 == 0.0),
+                "minimum_eb_weight": float(parameter_weights.min()),
+                "median_eb_weight": float(np.median(parameter_weights)),
+                "maximum_eb_weight": float(parameter_weights.max()),
+            }
+        )
+    return weights, pd.DataFrame(detail_rows), pd.DataFrame(summary_rows)
+
+
+def _apply_empirical_bayes_draws(
+    raw_product_draws: pd.DataFrame,
+    pooled_sample: pd.DataFrame,
+    weights: dict[str, float],
+) -> pd.DataFrame:
+    """Mix aligned product/pooled bootstrap replicate m using EB weights."""
+    product_base = raw_product_draws.copy()
+    for parameter in EB_PARAMETERS:
+        weight = weights[parameter]
+        product_base[parameter] = (
+            weight * product_base[parameter].to_numpy(dtype=float)
+            + (1.0 - weight) * pooled_sample[parameter].to_numpy(dtype=float)
+        )
+        product_base[f"eb_weight_{parameter}"] = weight
     return product_base
 
 
@@ -1121,7 +1189,7 @@ def _annotate_product_draws(
     base_demand: float,
     regular_price: float,
     unit_cost: float,
-    reliability: float,
+    legacy_reliability: float,
 ) -> None:
     for frame in frames:
         frame["upc"] = upc
@@ -1129,7 +1197,7 @@ def _annotate_product_draws(
         frame["base_demand"] = base_demand
         frame["regular_price"] = regular_price
         frame["unit_cost"] = unit_cost
-        frame["shrinkage_reliability"] = reliability
+        frame["legacy_heuristic_reliability"] = legacy_reliability
 
 
 def _product_summary_row(
@@ -1144,7 +1212,7 @@ def _product_summary_row(
     common_panels: np.ndarray,
     selected_gap: tuple[int, int],
     calibration_discount: float,
-    reliability: float,
+    legacy_reliability: float,
     product_draws: pd.DataFrame,
     base_demand: float,
     regular_price: float,
@@ -1161,7 +1229,7 @@ def _product_summary_row(
         "common_panels": int(len(common_panels)),
         "selected_gap": f"{selected_gap[0]}/{selected_gap[1]}",
         "calibration_discount": calibration_discount,
-        "shrinkage_reliability": reliability,
+        "legacy_heuristic_reliability": legacy_reliability,
         "price_elasticity_median": float(
             product_draws["price_elasticity"].median()
         ),
@@ -1288,11 +1356,21 @@ def calibrate_products(
     """Calibrate product-level draws with partial pooling and holdout diagnostics."""
     pooled_valid, probabilities = _pooled_sampling_inputs(pooled_draws)
     rng = np.random.default_rng(config.random_seed)
+    # One pooled draw sequence is shared across products.  Bootstrap replicate m
+    # therefore denotes the same pooled parent throughout the policy system.
+    pooled_sample = _sample_pooled_draws(
+        pooled_valid,
+        probabilities,
+        rng,
+        config.bootstrap_replications,
+    )
     draw_frames: list[pd.DataFrame] = []
     base_frames: list[pd.DataFrame] = []
     summary_rows: list[dict[str, Any]] = []
     event_studies: list[pd.DataFrame] = []
     holdout_rows: list[dict[str, Any]] = []
+    contexts: list[dict[str, Any]] = []
+    raw_draws_by_product: dict[str, pd.DataFrame] = {}
 
     for product_index, raw_upc in enumerate(selected_products):
         upc = str(raw_upc)
@@ -1328,22 +1406,56 @@ def calibrate_products(
             config,
             config.random_seed + product_index + 1,
         )
-        pooled_sample = _sample_pooled_draws(
-            pooled_valid,
-            probabilities,
-            rng,
-            config.bootstrap_replications,
-        )
-        reliability = _shrinkage_reliability(
-            len(depth_events),
-            len(common_panels),
-            config,
-        )
-        product_base = _shrink_product_draws(
+        raw_product_draws = _raw_product_parameter_draws(
             bootstrap,
             pooled_sample,
-            reliability,
             config,
+        )
+        raw_draws_by_product[upc] = raw_product_draws
+        contexts.append(
+            {
+                "upc": upc,
+                "product_name": product_name,
+                "product_frame": product_frame,
+                "calibration": calibration,
+                "evaluation": evaluation,
+                "event_summary": event_summary,
+                "depth_events": depth_events,
+                "common_panels": common_panels,
+                "selected_gap": selected_gap,
+                "calibration_discount": calibration_discount,
+                "raw_product_draws": raw_product_draws,
+                "legacy_reliability": _legacy_heuristic_reliability(
+                    len(depth_events),
+                    len(common_panels),
+                    config,
+                ),
+            }
+        )
+
+    eb_weights, eb_detail, eb_summary = _empirical_bayes_weights(
+        raw_draws_by_product
+    )
+
+    for context in contexts:
+        upc = context["upc"]
+        product_name = context["product_name"]
+        product_frame = context["product_frame"]
+        calibration = context["calibration"]
+        evaluation = context["evaluation"]
+        event_summary = context["event_summary"]
+        depth_events = context["depth_events"]
+        common_panels = context["common_panels"]
+        selected_gap = context["selected_gap"]
+        calibration_discount = context["calibration_discount"]
+        legacy_reliability = context["legacy_reliability"]
+        product_base = _apply_empirical_bayes_draws(
+            context["raw_product_draws"],
+            pooled_sample,
+            eb_weights[upc],
+        )
+        product_base["pooled_bootstrap_id"] = np.arange(
+            config.bootstrap_replications
         )
         product_draws = _expand_persistence_draws(product_base, config)
         base_demand, regular_price, unit_cost = _product_economic_references(
@@ -1357,7 +1469,7 @@ def calibrate_products(
             base_demand=base_demand,
             regular_price=regular_price,
             unit_cost=unit_cost,
-            reliability=reliability,
+            legacy_reliability=legacy_reliability,
         )
         product_draws["draw_weight"] /= product_draws["draw_weight"].sum()
 
@@ -1375,7 +1487,7 @@ def calibrate_products(
                 common_panels=common_panels,
                 selected_gap=selected_gap,
                 calibration_discount=calibration_discount,
-                reliability=reliability,
+                legacy_reliability=legacy_reliability,
                 product_draws=product_draws,
                 base_demand=base_demand,
                 regular_price=regular_price,
@@ -1392,11 +1504,20 @@ def calibrate_products(
             )
         )
 
+    eb_detail["legacy_heuristic_reliability"] = eb_detail["upc"].map(
+        {context["upc"]: context["legacy_reliability"] for context in contexts}
+    )
+    eb_detail["eb_minus_legacy_heuristic"] = (
+        eb_detail["eb_weight"] - eb_detail["legacy_heuristic_reliability"]
+    )
+
     product_holdout = pd.DataFrame(holdout_rows)
     return {
         "product_draws": pd.concat(draw_frames, ignore_index=True),
         "product_base_draws": pd.concat(base_frames, ignore_index=True),
         "product_summary": pd.DataFrame(summary_rows),
+        "empirical_bayes_weights": eb_detail,
+        "empirical_bayes_variance_summary": eb_summary,
         "product_event_study": (
             pd.concat(event_studies, ignore_index=True)
             if event_studies
