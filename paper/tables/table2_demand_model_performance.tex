@@ -1,0 +1,17 @@
+\begin{table}
+\centering
+\caption{Demand-model predictive performance.}
+\label{tab:demand_model_performance}
+\begin{tabular}{llrrrrrrrrr}
+\toprule
+model & split & n & mean_observed & mean_predicted & observed_to_predicted_ratio & mae & rmse & mean_poisson_deviance & median_poisson_deviance & p90_poisson_deviance \\
+\midrule
+common_spline & calibration & 43822.000000 & 40.303888 & 40.700334 & 0.990259 & 18.884537 & 51.733358 & 15.289250 & 2.639268 & 26.067375 \\
+product_promotion & calibration & 43822.000000 & 40.303888 & 41.307045 & 0.975715 & 18.569872 & 49.641848 & 14.345501 & 2.675631 & 25.633021 \\
+product_promotion_depth & calibration & 43822.000000 & 40.303888 & 41.744067 & 0.965500 & 17.794578 & 50.650801 & 12.843483 & 2.312495 & 22.776774 \\
+common_spline & test & 45641.000000 & 47.250805 & 45.053645 & 1.048768 & 26.580575 & 106.272615 & 35.229138 & 2.850705 & 33.661242 \\
+product_promotion & test & 45641.000000 & 47.250805 & 45.738383 & 1.033067 & 26.153110 & 100.175320 & 34.195887 & 3.007973 & 34.730038 \\
+product_promotion_depth & test & 45641.000000 & 47.250805 & 45.024133 & 1.049455 & 26.424740 & 115.097170 & 35.319935 & 2.473592 & 28.543465 \\
+\bottomrule
+\end{tabular}
+\end{table}
