@@ -43,6 +43,7 @@ def tiny_problem():
     profiles = {
         "A": {
             "baseline_demand": np.array([10.0, 9.0, 14.0, 11.0, 10.0, 10.0]),
+            "baseline_revenue": np.array([22.0, 19.8, 30.8, 24.2, 22.0, 22.0]),
             "demand_factor": np.array([1.0, 0.9, 1.4, 1.1, 1.0, 1.0]),
             "price_factor": np.ones(6),
             "cost_factor": np.ones(6),
@@ -50,6 +51,7 @@ def tiny_problem():
         },
         "B": {
             "baseline_demand": np.array([9.9, 11.7, 7.2, 9.0, 9.0, 9.0]),
+            "baseline_revenue": np.array([19.8, 23.4, 14.4, 18.0, 18.0, 18.0]),
             "demand_factor": np.array([1.1, 1.3, 0.8, 1.0, 1.0, 1.0]),
             "price_factor": np.ones(6),
             "cost_factor": np.ones(6),

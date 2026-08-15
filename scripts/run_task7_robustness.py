@@ -58,11 +58,11 @@ def optimize(draws, profiles, actions, planning, grid, capacities):
 
 def main():
     started = time.monotonic()
-    artifact=load_pickle(ROOT/'artifacts/policy/policy_optimization.pkl')
+    artifact=load_pickle(ROOT/'artifacts/policy/empirical_bayes_price_consistent/policy_optimization.pkl')
     products=list(artifact['products']); grid=list(artifact['reimbursement_grid']); capacities=list(artifact['capacities'])
     planning=artifact['schedule_system']['planning']; profiles=artifact['weekly_profiles']; actions=artifact['action_sets']
     main_run={'results':artifact['policy_results'],'schedules':artifact['three_policy_schedules']}
-    base=pd.read_pickle(ROOT/'artifacts/calibration/product_behavioral_bootstrap.pkl'); pooled=pd.read_pickle(ROOT/'artifacts/calibration/pooled_behavioral_draws.pkl')
+    base=pd.read_pickle(ROOT/'artifacts/calibration/empirical_bayes/product_behavioral_bootstrap.pkl'); pooled=pd.read_pickle(ROOT/'artifacts/calibration/empirical_bayes/pooled_behavioral_draws.pkl')
     print("Task 7: optimizing pooled-displacement specification...", flush=True)
     pooled_run=optimize(pooled_displacement_draws(base,pooled,products),profiles,actions,planning,grid,capacities)
     print(f"Task 7: pooled-displacement complete ({time.monotonic() - started:.1f}s).", flush=True)
@@ -71,10 +71,10 @@ def main():
     exclude_run=optimize({p:artifact['draws_by_product'][p] for p in keep},{p:profiles[p] for p in keep},{p:actions[p] for p in keep},planning,grid,capacities)
     print(f"Task 7: exclusion complete ({time.monotonic() - started:.1f}s).", flush=True)
     outputs=[summarize('main',main_run['results'],main_run['schedules'],capacities),summarize('pooled_displacement',pooled_run['results'],pooled_run['schedules'],capacities),summarize('exclude_3800001611',exclude_run['results'],exclude_run['schedules'],capacities)]
-    tables=ROOT/'results/final/tables'; tables.mkdir(parents=True,exist_ok=True)
+    tables=ROOT/'results/empirical_bayes_price_consistent/tables'; tables.mkdir(parents=True,exist_ok=True)
     pd.concat([x[0] for x in outputs],ignore_index=True).to_csv(tables/'task7_robustness_comparison.csv',index=False)
     pd.concat([x[1] for x in outputs],ignore_index=True).to_csv(tables/'task7_robustness_full_grid.csv',index=False)
-    save_pickle({'pooled_displacement': pooled_run, 'exclude_3800001611': exclude_run}, ROOT/'artifacts/policy/task7_robustness_runs.pkl')
+    save_pickle({'pooled_displacement': pooled_run, 'exclude_3800001611': exclude_run}, ROOT/'artifacts/policy/empirical_bayes_price_consistent/task7_robustness_runs.pkl')
     print(pd.concat([x[0] for x in outputs],ignore_index=True).to_string(index=False))
     print(f"Task 7: finished ({time.monotonic() - started:.1f}s).", flush=True)
 

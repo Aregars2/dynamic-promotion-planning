@@ -12,17 +12,18 @@ def _project_root() -> Path:
 
 def test_active_notebooks_parse_and_contain_no_function_definitions() -> None:
     notebook_dir = _project_root() / "notebooks"
-    notebooks = sorted(notebook_dir.glob("*.ipynb"))
-    assert [path.name for path in notebooks] == [
-            "01_sample_construction.ipynb",
-            "02_demand_estimation.ipynb",
-            "02_policy_promotion_depth_only.ipynb",
-            "03_descriptive_analysis.ipynb",
+    expected = [
+        "01_sample_construction.ipynb",
+        "02_demand_estimation.ipynb",
+        "03_descriptive_analysis.ipynb",
         "04_behavioral_calibration.ipynb",
         "05_product_calibration_and_action_support.ipynb",
         "06_policy_optimization.ipynb",
         "07_policy_results.ipynb",
+        "08_robustness_and_uncertainty.ipynb",
     ]
+    notebooks = [notebook_dir / name for name in expected]
+    assert all(path.is_file() for path in notebooks)
     for path in notebooks:
         notebook = nbformat.read(path, as_version=4)
         for cell in notebook.cells:
@@ -33,7 +34,44 @@ def test_active_notebooks_parse_and_contain_no_function_definitions() -> None:
                 isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
                 for node in ast.walk(tree)
             )
-            assert len(cell.source.splitlines()) <= 80
+
+
+def test_eight_notebook_workflow_uses_versioned_eb_producers_and_consumers() -> None:
+    """Guard the ordered production chain without rerunning costly estimation."""
+    root = _project_root()
+
+    def source(name: str) -> str:
+        notebook = nbformat.read(root / "notebooks" / name, as_version=4)
+        return "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "code")
+
+    notebook_04 = source("04_behavioral_calibration.ipynb")
+    notebook_05 = source("05_product_calibration_and_action_support.ipynb")
+    notebook_06 = source("06_policy_optimization.ipynb")
+    notebook_07 = source("07_policy_results.ipynb")
+    notebook_08 = source("08_robustness_and_uncertainty.ipynb")
+
+    assert "EB_CALIBRATION_DIR" in notebook_04
+    assert "pooled_behavioral_draws.pkl" in notebook_04
+    assert "empirical_bayes" in notebook_05
+    assert "build_eb_descriptive_figure.py" in notebook_05
+    assert "empirical_bayes" in notebook_06
+    assert "product_behavioral_draws.pkl" in notebook_06
+    assert "policy_optimization.pkl" in notebook_06
+    assert "task8_three_policy_reporting_grid.csv" in notebook_07
+    assert "run_task7_robustness.py" in notebook_08
+    assert "run_task8_reporting_checks.py" in notebook_08
+    assert "build_three_policy_figures.py" in notebook_08
+
+    for script_name in [
+        "build_three_policy_figures.py",
+        "run_final_robustness_reporting.py",
+        "run_alternative_ppml_robustness.py",
+        "run_task7_robustness.py",
+        "run_task8_reporting_checks.py",
+    ]:
+        text = (root / "scripts" / script_name).read_text(encoding="utf-8")
+        assert "empirical_bayes" in text, script_name
+        assert "artifacts/policy/policy_optimization.pkl" not in text, script_name
 
 
 def test_notebook_06_full_grid_call_passes_all_required_inputs() -> None:

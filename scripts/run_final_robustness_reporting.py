@@ -1,7 +1,7 @@
 """Post-specification reporting and fixed-calendar behavioral uncertainty.
 
 This script is deliberately read-only with respect to the frozen main policy
-artifact.  It writes only below ``results/robustness``.
+artifact. It writes only below ``results/empirical_bayes_price_consistent/robustness``.
 """
 from __future__ import annotations
 
@@ -18,7 +18,9 @@ sys.path.insert(0, str(ROOT / "src"))
 from dynamic_promotion_planning.policy import evaluate_schedule_map, load_pickle
 
 
-OUT = ROOT / "results" / "robustness"
+EB_CALIBRATION = ROOT / "artifacts" / "calibration" / "empirical_bayes"
+EB_POLICY = ROOT / "artifacts" / "policy" / "empirical_bayes_price_consistent"
+OUT = ROOT / "results" / "empirical_bayes_price_consistent" / "robustness"
 
 
 def _quantile(values: np.ndarray, probabilities: list[float]) -> np.ndarray:
@@ -64,7 +66,7 @@ def _parent_policy_values(
     schedule: dict[str, np.ndarray], artifact: dict, share: float, parent_ids: np.ndarray
 ) -> np.ndarray:
     """Evaluate one fixed calendar by coherent bootstrap parent, conditioning on persistence children."""
-    raw = pd.read_pickle(ROOT / "artifacts" / "calibration" / "product_behavioral_draws.pkl").copy()
+    raw = pd.read_pickle(EB_CALIBRATION / "product_behavioral_draws.pkl").copy()
     raw["upc"] = raw["upc"].astype(str)
     if set(parent_ids) != set(range(1000)):
         raise AssertionError("Expected coherent parent bootstrap IDs 0,...,999.")
@@ -135,7 +137,7 @@ def fixed_calendar_uncertainty(artifact: dict) -> tuple[pd.DataFrame, pd.DataFra
 def run_reporting_robustness() -> dict[str, pd.DataFrame]:
     started = time.monotonic()
     OUT.mkdir(parents=True, exist_ok=True)
-    artifact_path = ROOT / "artifacts" / "policy" / "policy_optimization.pkl"
+    artifact_path = EB_POLICY / "policy_optimization.pkl"
     artifact = load_pickle(artifact_path)
     grid, peaks = same_horizon_normalization(artifact)
     grid.to_csv(OUT / "same_horizon_normalization_full_grid.csv", index=False)

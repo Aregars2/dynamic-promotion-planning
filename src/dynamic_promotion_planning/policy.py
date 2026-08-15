@@ -330,12 +330,31 @@ def _weekly_demand_summary(predictions: pd.DataFrame) -> pd.DataFrame:
             "Predictions lack the regular-state PPML counterfactual. "
             "Re-run demand estimation before policy optimization."
         )
+    required = {"upc", "week", "regular_price", "mu_hat_regular_counterfactual"}
+    missing = required.difference(predictions.columns)
+    if missing:
+        raise ValueError(f"Predictions lack baseline-revenue inputs: {sorted(missing)}")
+    rows = predictions.loc[:, list(required)].copy()
+    rows["regular_price"] = pd.to_numeric(rows["regular_price"], errors="coerce")
+    rows["mu_hat_regular_counterfactual"] = pd.to_numeric(
+        rows["mu_hat_regular_counterfactual"], errors="coerce"
+    )
+    if (
+        ~np.isfinite(rows["regular_price"])
+        | rows["regular_price"].le(0)
+        | ~np.isfinite(rows["mu_hat_regular_counterfactual"])
+        | rows["mu_hat_regular_counterfactual"].lt(0)
+    ).any():
+        raise ValueError("Baseline-revenue inputs must be finite with positive prices and nonnegative demand.")
+    rows["counterfactual_baseline_revenue"] = (
+        rows["regular_price"] * rows["mu_hat_regular_counterfactual"]
+    )
     return (
-        predictions.groupby(["upc", "week"], observed=True)[
-            "mu_hat_regular_counterfactual"
-        ]
-        .sum()
-        .rename("counterfactual_baseline_demand")
+        rows.groupby(["upc", "week"], observed=True)
+        .agg(
+            counterfactual_baseline_demand=("mu_hat_regular_counterfactual", "sum"),
+            counterfactual_baseline_revenue=("counterfactual_baseline_revenue", "sum"),
+        )
         .reset_index()
     )
 
@@ -385,6 +404,7 @@ def _complete_weekly_profile(
     )
     level_columns = [
         "counterfactual_baseline_demand",
+        "counterfactual_baseline_revenue",
         "regular_price_week",
         "unit_cost_week",
     ]
@@ -417,6 +437,7 @@ def _profile_arrays(profile: pd.DataFrame) -> dict[str, dict[str, np.ndarray]]:
         group = group.sort_values("planning_week")
         arrays[str(upc)] = {
             "baseline_demand": group["counterfactual_baseline_demand"].to_numpy(dtype=float),
+            "baseline_revenue": group["counterfactual_baseline_revenue"].to_numpy(dtype=float),
             # Compatibility only.  Evaluation uses ``baseline_demand`` directly.
             "demand_factor": group["demand_factor"].to_numpy(dtype=float),
             "price_factor": group["price_factor"].to_numpy(dtype=float),
@@ -424,6 +445,20 @@ def _profile_arrays(profile: pd.DataFrame) -> dict[str, dict[str, np.ndarray]]:
             "source_week": group["week"].to_numpy(dtype=int),
         }
     return arrays
+
+
+def _profile_revenue_baseline(
+    profile: Mapping[str, np.ndarray],
+    draws: Mapping[str, np.ndarray],
+    baseline: np.ndarray | float,
+    week: int,
+) -> np.ndarray | float:
+    """Return R_base, with a legacy fallback for non-policy test profiles."""
+    revenue = profile.get("baseline_revenue")
+    if revenue is None:
+        return baseline * np.asarray(draws["regular_price"], dtype=float)
+    revenue_array = np.asarray(revenue, dtype=float)
+    return revenue_array[week] if revenue_array.ndim else revenue_array
 
 
 def build_weekly_economic_profiles(
@@ -576,10 +611,14 @@ def _evaluate_schedule_batch(
             * np.power(np.clip(1.0 - depth, 1e-8, None), -epsilon)
             * np.exp(gamma * promotion - psi * state)
         )
-        price = regular_price * price_factor
+        revenue_baseline = _profile_revenue_baseline(profile, draws, baseline, week)
+        revenue_baseline = revenue_baseline * price_factor
         cost = unit_cost * cost_factor
-        current_intercept = (price * (1.0 - depth) - cost) * demand
-        current_exposure = regular_price * depth * demand
+        multiplier = demand / baseline
+        current_intercept = multiplier * (
+            revenue_baseline * (1.0 - depth) - cost * baseline
+        )
+        current_exposure = multiplier * revenue_baseline * depth
         discount = planning.discount_factor**week
         intercept += discount * (current_intercept @ weights)
         exposure += discount * (current_exposure @ weights)
@@ -729,12 +768,23 @@ def schedule_input_fingerprint(
             "unit_cost",
         ):
             digest.update(np.asarray(draws_by_product[upc][key], dtype=float).tobytes())
-        for key in ("baseline_demand", "price_factor", "cost_factor"):
+        for key in ("baseline_demand", "baseline_revenue", "price_factor", "cost_factor"):
             if key not in weekly_profiles[upc]:
                 # Constant fallback profiles intentionally use draw-level demand.
                 if key == "baseline_demand":
                     continue
-            values = np.asarray(weekly_profiles[upc][key], dtype=float)
+                if key == "baseline_revenue":
+                    baseline = np.asarray(
+                        weekly_profiles[upc].get("baseline_demand", draws_by_product[upc]["base_demand"]),
+                        dtype=float,
+                    )
+                    values = baseline[..., None] * np.asarray(
+                        draws_by_product[upc]["regular_price"], dtype=float
+                    )[None, ...]
+                else:
+                    raise KeyError(f"Profile for {upc} lacks {key!r}.")
+            else:
+                values = np.asarray(weekly_profiles[upc][key], dtype=float)
             digest.update(values[: planning.evaluation_horizon].tobytes())
 
     return digest.hexdigest()
@@ -930,10 +980,14 @@ def _expected_current_profit(
         * np.power(max(1.0 - depth_value, 1e-8), -draws["epsilon"])
         * np.exp(draws["gamma"] * promotion - draws["psi"] * state)
     )
-    price = draws["regular_price"] * float(profile["price_factor"][week])
+    revenue_baseline = _profile_revenue_baseline(profile, draws, baseline, week)
+    revenue_baseline = revenue_baseline * float(profile["price_factor"][week])
     cost = draws["unit_cost"] * float(profile["cost_factor"][week])
-    reimbursement = alpha * draws["regular_price"] * depth_value
-    profit = (price * (1.0 - depth_value) - cost + reimbursement) * demand
+    multiplier = demand / baseline
+    profit = multiplier * (
+        (1.0 - depth_value + alpha * depth_value) * revenue_baseline
+        - cost * baseline
+    )
     return float(profit @ draws["weights"])
 
 
@@ -1057,10 +1111,13 @@ def evaluate_schedule_map(
                 * np.power(max(1.0 - depth, 1e-8), -draws["epsilon"])
                 * np.exp(draws["gamma"] * promotion - draws["psi"] * state)
             )
-            price = draws["regular_price"] * float(profile["price_factor"][week])
+            revenue_baseline = _profile_revenue_baseline(profile, draws, baseline, week)
+            revenue_baseline = revenue_baseline * float(profile["price_factor"][week])
             cost = draws["unit_cost"] * float(profile["cost_factor"][week])
-            reimbursement = alpha * draws["regular_price"] * depth
-            profit_draw = (price * (1.0 - depth) - cost + reimbursement) * demand
+            multiplier = demand / baseline
+            profit_draw = multiplier * (
+                (1.0 - depth + alpha * depth) * revenue_baseline - cost * baseline
+            )
             expected_profit = float(profit_draw @ draws["weights"])
             discounted_profit = (planning.discount_factor**week) * expected_profit
             total += discounted_profit
@@ -1104,6 +1161,7 @@ def demand_multiplier_audit(
             profile = weekly_profiles[upc]
             baseline = np.asarray(profile.get("baseline_demand", draws["base_demand"]), dtype=float)
             q_base = baseline[week] if baseline.ndim else baseline
+            r_base = _profile_revenue_baseline(profile, draws, q_base, week)
             # PPML product-week baselines are scalar levels; broadcast them so
             # the draw-weighted multiplier diagnostic remains well defined.
             if np.ndim(q_base) == 0:
@@ -1114,6 +1172,7 @@ def demand_multiplier_audit(
             expected_demand = float((q_base * price * lift * displacement) @ weights)
             rows.append({"upc": str(upc), "week": week + 1, "depth": depth,
                          "q_base": float(q_base @ weights), "price_response": float(price @ weights),
+                         "r_base": float(np.asarray(r_base) @ weights) if np.ndim(r_base) else float(r_base),
                          "promotion_lift": float(lift @ weights),
                          "displacement_multiplier": float(displacement @ weights),
                          "multiplier_product_demand": expected_demand,

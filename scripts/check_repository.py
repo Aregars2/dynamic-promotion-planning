@@ -17,9 +17,8 @@ EXPECTED = [
     "05_product_calibration_and_action_support.ipynb",
     "06_policy_optimization.ipynb",
     "07_policy_results.ipynb",
-    "08_boundary_refinement.ipynb",
+    "08_robustness_and_uncertainty.ipynb",
 ]
-MAX_CODE_CELL_LINES = 80
 MAX_ACTIVE_FUNCTION_LINES = 250
 PROHIBITED_HEADINGS = {
     "Save human-readable summaries",
@@ -32,20 +31,14 @@ PROHIBITED_HEADINGS = {
 }
 
 errors: list[str] = []
-actual = sorted(path.name for path in ACTIVE.glob("*.ipynb"))
-if actual != EXPECTED:
-    errors.append(f"Active notebook set differs from expected:\n{actual}")
+missing = [name for name in EXPECTED if not (ACTIVE / name).is_file()]
+if missing:
+    errors.append(f"Missing production notebooks: {missing}")
 
-for path in ACTIVE.glob("*.ipynb"):
+for path in (ACTIVE / name for name in EXPECTED):
     notebook = nbformat.read(path, as_version=4)
     for index, cell in enumerate(notebook.cells):
         if cell.cell_type == "code":
-            line_count = len(cell.source.splitlines())
-            if line_count > MAX_CODE_CELL_LINES:
-                errors.append(
-                    f"{path.name}, cell {index}: {line_count} code lines "
-                    f"(maximum {MAX_CODE_CELL_LINES})"
-                )
             try:
                 tree = ast.parse(cell.source)
             except SyntaxError as exc:

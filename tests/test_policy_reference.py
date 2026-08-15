@@ -256,7 +256,7 @@ def test_fingerprint_covers_all_decision_relevant_inputs(tiny_problem) -> None:
         key: {name: np.asarray(value).copy() for name, value in item.items()}
         for key, item in profiles.items()
     }
-    changed_profiles["A"]["demand_factor"][0] += 0.01
+    changed_profiles["A"]["baseline_revenue"][0] += 0.01
     assert fingerprint(p=changed_profiles) != baseline
 
     changed_actions = dict(actions)

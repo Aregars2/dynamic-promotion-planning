@@ -20,8 +20,9 @@ from dynamic_promotion_planning.policy_workflow import demand_only_profiles
 
 
 MODEL = "product_promotion"
-OUT = ROOT / "results" / "robustness" / "alternative_ppml_product_promotion"
-ARTIFACTS = ROOT / "artifacts" / "robustness" / "alternative_ppml_product_promotion"
+EB_POLICY = ROOT / "artifacts" / "policy" / "empirical_bayes_price_consistent"
+OUT = ROOT / "results" / "empirical_bayes_price_consistent" / "robustness" / "alternative_ppml_product_promotion"
+ARTIFACTS = ROOT / "artifacts" / "robustness" / "empirical_bayes_price_consistent" / "alternative_ppml_product_promotion"
 
 
 def _transitions(schedules: dict, capacities: list[int]) -> pd.DataFrame:
@@ -85,7 +86,7 @@ def run_alternative_ppml_robustness() -> dict[str, object]:
     started = time.monotonic()
     OUT.mkdir(parents=True, exist_ok=True)
     ARTIFACTS.mkdir(parents=True, exist_ok=True)
-    main_path = ROOT / "artifacts" / "policy" / "policy_optimization.pkl"
+    main_path = EB_POLICY / "policy_optimization.pkl"
     main = load_pickle(main_path)
     planning = main["schedule_system"]["planning"]
     source_weeks = np.asarray(main["source_weeks"], dtype=int)

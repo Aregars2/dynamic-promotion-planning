@@ -35,6 +35,9 @@ def demand_only_profiles(
 
         output[str(upc)] = {
             "baseline_demand": baseline_demand,
+            "baseline_revenue": np.asarray(
+                values["baseline_revenue"], dtype=float
+            ).copy(),
             # Compatibility alias only; the evaluator does not use this field.
             "demand_factor": np.ones_like(baseline_demand, dtype=float),
             "price_factor": np.ones_like(
