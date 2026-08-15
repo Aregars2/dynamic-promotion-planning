@@ -13,7 +13,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from dynamic_promotion_planning.config import load_analysis_config
@@ -159,7 +159,7 @@ def main() -> None:
 
 ## Reproducibility
 
-- Command: `python scripts/audit_calibration_safeguards_and_eligibility.py`
+- Command: `python scripts/audits/audit_calibration_safeguards_and_eligibility.py`
 - Behavioral inputs: `artifacts/calibration/empirical_bayes/product_behavioral_bootstrap.pkl` and `product_behavioral_draws.pkl`
 - Eligibility input: `data/processed/cereal_demand_model_data.parquet`, with the exact Notebook-02 promotion and regular indicators reconstructed from `pricing_state`.
 - This audit changes no calibration, eligibility rule, selected sample, or policy artifact.

@@ -17,7 +17,7 @@ import pandas as pd
 from scipy.optimize import Bounds, LinearConstraint, milp
 from scipy.sparse import csc_matrix, vstack
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from dynamic_promotion_planning.policy import (
@@ -392,7 +392,7 @@ def main() -> None:
 
 - Canonical artifact: `{ARTIFACT_PATH.relative_to(ROOT)}`
 - Canonical 12-week reporting grid: `{TASK8_GRID_PATH.relative_to(ROOT)}`
-- Command: `python scripts/audit_price_consistent_calendar_switching.py`
+- Command: `python scripts/audits/audit_price_consistent_calendar_switching.py`
 - The audit did not modify the canonical artifact or canonical result tables.
 
 ## B=3 peak resolution
