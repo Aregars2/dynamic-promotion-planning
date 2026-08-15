@@ -12,6 +12,8 @@ def _project_root() -> Path:
 
 def test_active_notebooks_parse_and_contain_no_function_definitions() -> None:
     notebook_dir = _project_root() / "notebooks"
+    # Current ordered production workflow.  The retired depth-only notebook is
+    # intentionally absent; Notebook 08 is the final robustness/reporting step.
     expected = [
         "01_sample_construction.ipynb",
         "02_demand_estimation.ipynb",
@@ -23,7 +25,7 @@ def test_active_notebooks_parse_and_contain_no_function_definitions() -> None:
         "08_robustness_and_uncertainty.ipynb",
     ]
     notebooks = [notebook_dir / name for name in expected]
-    assert all(path.is_file() for path in notebooks)
+    assert sorted(path.name for path in notebook_dir.glob("*.ipynb")) == expected
     for path in notebooks:
         notebook = nbformat.read(path, as_version=4)
         for cell in notebook.cells:

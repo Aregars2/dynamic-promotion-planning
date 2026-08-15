@@ -51,7 +51,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-addopts = "-q"
+addopts = "-q --basetemp=.pytest-tmp"
 markers = [
     "integration: checks canonical generated artifacts when available",
 ]

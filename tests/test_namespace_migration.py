@@ -33,14 +33,14 @@ def test_active_code_uses_only_canonical_namespace() -> None:
         assert "import price_of_extrapolation" not in text
 
 
-def test_notebook_imports_use_canonical_namespace() -> None:
+def test_notebooks_do_not_import_retired_namespace() -> None:
+    """Notebooks may delegate to scripts; they need not import the package directly."""
     for path in sorted((ROOT / "notebooks").glob("*.ipynb")):
         notebook = nbformat.read(path, as_version=4)
         code = "\n".join(
             cell.source for cell in notebook.cells if cell.cell_type == "code"
         )
         assert "price_of_extrapolation" not in code
-        assert "dynamic_promotion_planning" in code
 
 
 def test_historical_namespace_resolves_to_canonical_objects() -> None:

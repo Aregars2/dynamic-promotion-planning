@@ -83,7 +83,10 @@ def test_action_support_uses_bin_centers_and_top_support_rule() -> None:
     assert action_sets["A"] == (0.0, 0.1, 0.15, 0.2)
     positive = [action for action in action_sets["A"] if action > 0]
     assert all(action >= 0.05 for action in positive)
-    assert all(round(action / 0.05) * 0.05 == action for action in positive)
+    assert all(
+        np.isclose(action / 0.05, round(action / 0.05), rtol=0.0, atol=1e-12)
+        for action in positive
+    )
     selected = table.loc[table["selected_for_grid"] & table["action"].gt(0)]
     assert set(selected["selection_reason"]) == {"top_supported_bin"}
 

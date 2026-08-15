@@ -259,6 +259,9 @@ def test_fingerprint_covers_all_decision_relevant_inputs(tiny_problem) -> None:
     changed_profiles["A"]["baseline_revenue"][0] += 0.01
     assert fingerprint(p=changed_profiles) != baseline
 
+    # ``demand_factor`` is an inactive compatibility alias in the
+    # price-consistent calculation, so it is deliberately not fingerprinted.
+
     changed_actions = dict(actions)
     changed_actions["A"] = (0.0, 0.1)
     assert fingerprint(a=changed_actions) != baseline
