@@ -71,6 +71,8 @@ def main() -> None:
     axes[1].scatter(plot["mean_effect"], y, color="#1f77b4", s=40, zorder=2)
     axes[1].axvline(0.0, color="#1f77b4", linestyle=":", linewidth=1.0)
     axes[1].set(yticks=y, yticklabels=plot["product_label"], xlabel="Predicted change in weekly sales, post-promotion weeks 1–4", title="(b) Model-implied post-promotion effects")
+    # Use ASCII punctuation so the label renders consistently on Windows.
+    axes[1].set_xlabel("Predicted change in weekly sales, post-promotion weeks 1-4")
     for suffix in ("png", "pdf"):
         fig.savefig(figure_dir / f"paper_promotion_depths_and_model_implied_post_effects.{suffix}", dpi=300 if suffix == "png" else None, bbox_inches="tight")
     print("Saved EB Figure 1:", figure_dir)

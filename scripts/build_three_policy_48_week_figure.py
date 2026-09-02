@@ -56,7 +56,7 @@ def main() -> None:
     fig.supxlabel(r"Reimbursement share, $\lambda$", y=0.04)
     fig.supylabel("Value contrast (% of 48-week myopic profit)", x=0.03)
     handles = [Line2D([0], [0], color=c, linestyle=s, linewidth=w, label=label) for _, label, c, s, w in components]
-    handles.append(Line2D([0], [0], marker="o", color="none", markerfacecolor="#022278D2", markeredgecolor="white", markersize=8, label="Absolute-total peak"))
+    handles.append(Line2D([0], [0], marker="o", color="none", markerfacecolor="#022278D2", markeredgecolor="white", markersize=8, label=r"Peak $\Delta^{\mathrm{total}}$"))
     fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, bbox_to_anchor=(0.5, 0.995))
     fig.subplots_adjust(left=0.10, right=0.98, top=0.90, bottom=0.11, hspace=0.30, wspace=0.13)
     for suffix in ("png", "pdf"):
