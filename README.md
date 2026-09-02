@@ -22,7 +22,7 @@ The verification path is inexpensive. `python scripts/reproduce_paper.py` is exp
 
 Run fresh kernels in order: `01_sample_construction`, `02_demand_estimation`, `03_descriptive_analysis`, `04_behavioral_calibration`, `05_product_calibration_and_action_support`, `06_policy_optimization`, `07_policy_results`, and `08_robustness_and_uncertainty`.
 
-Notebook 07's VDO material is diagnostic/validation material, not a current manuscript result. Notebook 08 creates price-consistent reporting, robustness, uncertainty, Figure 2, and Tables 3--5.
+Notebook 07 contains schedule diagnostics and validation material that is not a current manuscript result. Notebook 08 creates price-consistent reporting, robustness, uncertainty, Figure 2, and Tables 3--5.
 
 ## Paper outputs
 
@@ -50,4 +50,4 @@ python scripts/check_repository.py
 python scripts/verify_paper_outputs.py
 ```
 
-See `docs/reproducibility.md`, `docs/artifact_registry.md`, `docs/paper_output_coverage.md`, `docs/test_protocol.md`, and `docs/AGENT_HANDOFF.md` for detailed contracts. Historical compatibility shims are provenance only, not canonical workflow inputs.
+See `docs/reproducibility.md`, `docs/artifact_registry.md`, `docs/paper_output_coverage.md`, `docs/test_protocol.md`, and `docs/scope_and_limitations.md` for detailed contracts.

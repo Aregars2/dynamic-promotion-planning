@@ -9,4 +9,4 @@ The current evidence establishes that, under the estimated demand-displacement m
 3. the dominant mechanism is timing and promotion-status reallocation rather than universally deeper discounts;
 4. realized historical acquisition costs are unsuitable as action-independent counterfactual inputs because they are strongly aligned with the observed promotion calendar.
 
-A thesis extension should add a controlled mechanism simulation with a known demand-generating process. The minimal design should vary displacement, persistence, distance to a policy boundary, terminal washout, and action support. It should report true VDO, estimated VDO bias, policy regret, and boundary recovery. This simulation is not part of the final empirical paper pipeline.
+A thesis extension should add a controlled mechanism simulation with a known demand-generating process. The minimal design should vary displacement, persistence, distance to a policy boundary, terminal washout, and action support. It should report the true policy contrast, estimated contrast bias, policy regret, and boundary recovery. This simulation is not part of the final empirical paper pipeline.

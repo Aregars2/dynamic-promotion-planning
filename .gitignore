@@ -10,6 +10,14 @@ __pycache__/
 # Raw and large local data
 data/raw/
 data/interim/
+data/processed/**
+!data/processed/.gitkeep
+
+# Reproducible scientific outputs; keep only explicitly tracked placeholders.
+artifacts/
+results/**
+!results/
+!results/**/.gitkeep
 
 # Regenerable caches
 artifacts/cache/**

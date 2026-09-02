@@ -16,4 +16,6 @@ The historic support-count weight is retained only as a diagnostic column
 calculation.  EB calibration products are versioned beneath
 `artifacts/calibration/empirical_bayes`, and later policy products are
 versioned beneath `artifacts/policy/empirical_bayes` and
-`results/empirical_bayes`.
+`results/empirical_bayes`. This provenance note records the initial
+replacement; the current price-consistent policy and reporting paths are
+listed in `docs/artifact_registry.md`.

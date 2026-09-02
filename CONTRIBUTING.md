@@ -7,7 +7,7 @@ This repository is maintained as a scientific workflow rather than as a general-
 - Put reusable computation in `src/dynamic_promotion_planning/`.
 - Keep notebooks focused on empirical design, orchestration, diagnostics, and displayed results.
 - Do not define functions or classes in active notebooks.
-- Keep each notebook code cell below 80 lines and limited to one analytical step.
+- Keep notebook cells focused on one analytical step; put reusable logic in `src/`.
 - Read analysis choices from `config/analysis.toml` rather than duplicating constants.
 - Use canonical artifact paths documented in `docs/artifact_registry.md`.
 - Store regenerable schedule systems only under `artifacts/cache/`.

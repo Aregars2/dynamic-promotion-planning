@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-import importlib
 import tomllib
 
 import nbformat
@@ -43,18 +42,8 @@ def test_notebooks_do_not_import_retired_namespace() -> None:
         assert "price_of_extrapolation" not in code
 
 
-def test_historical_namespace_resolves_to_canonical_objects() -> None:
-    canonical = importlib.import_module("dynamic_promotion_planning.policy")
-    historical = importlib.import_module("price_of_extrapolation.policy")
-
-    assert historical.PlanningSpec is canonical.PlanningSpec
-    assert historical.SupportSpec is canonical.SupportSpec
-    assert historical.load_pickle is canonical.load_pickle
-
-
-def test_legacy_top_level_pickle_modules_remain_importable() -> None:
-    corrected = importlib.import_module("corrected_promotion_analysis")
-    tiny = importlib.import_module("tiny_paper_pipeline_v3")
-
-    assert hasattr(corrected, "PlanningSpec")
-    assert tiny is not None
+def test_release_tree_excludes_historical_pickle_compatibility() -> None:
+    assert not (ROOT / "src" / "price_of_extrapolation").exists()
+    assert not (ROOT / "src" / "corrected_promotion_analysis.py").exists()
+    assert not (ROOT / "src" / "tiny_paper_pipeline_v3.py").exists()
+    assert not (ROOT / "src" / "dynamic_promotion_planning" / "legacy_pipeline.py").exists()

@@ -74,10 +74,7 @@ for path in (ACTIVE / name for name in EXPECTED):
 
 
 ACTIVE_PACKAGE = ROOT / "src" / "dynamic_promotion_planning"
-SOURCE_EXCLUSIONS = {"legacy_pipeline.py"}
 for path in ACTIVE_PACKAGE.glob("*.py"):
-    if path.name in SOURCE_EXCLUSIONS:
-        continue
     try:
         tree = ast.parse(path.read_text(encoding="utf-8"))
     except SyntaxError as exc:

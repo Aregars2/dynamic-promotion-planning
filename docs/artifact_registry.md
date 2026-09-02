@@ -16,4 +16,5 @@
 | `results/empirical_bayes_price_consistent/{tables,robustness,figures}/` | Notebook 08 | Paper outputs | Canonical reporting and robustness outputs |
 | `artifacts/cache/policy/empirical_bayes_price_consistent/*.pkl` | Notebook 06 | Same notebook run | Regenerable; never a scientific source of truth |
 
-The compatibility modules in `src/corrected_promotion_analysis.py` and `src/tiny_paper_pipeline_v3.py` exist only because historical pickle files encode their original Python module names. New code should import from `dynamic_promotion_planning`.
+Historical pickle compatibility is intentionally not part of this release.
+The canonical package is `dynamic_promotion_planning`.
