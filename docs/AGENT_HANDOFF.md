@@ -67,8 +67,8 @@ Focused validation passed after implementation:
 EB calibration outputs are versioned and must not overwrite heuristic outputs:
 
 - calibration: `artifacts/calibration/empirical_bayes/`
-- policy: `artifacts/policy/empirical_bayes/`
-- results: `results/empirical_bayes/`
+- policy: `artifacts/policy/empirical_bayes_price_consistent/`
+- policy results: `results/empirical_bayes_price_consistent/`
 
 Notebook 05 and Notebook 06 were updated to use those EB-specific paths.
 If the user asks to run EB, start with the behavioral calibration notebook and

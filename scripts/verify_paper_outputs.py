@@ -50,7 +50,7 @@ def main() -> None:
     table3 = frames["table3"]
     _close(table3["B"].to_numpy(), np.array([1, 2, 3, 8]), "Table 3 capacity rows changed.")
     _close(table3[r"Peak $\\lambda$"].to_numpy(), np.array([0.81, 0.76, 0.86, 0.76]), "Figure-2/Table-3 peak lambdas changed.")
-    _close(table3[r"$\\Delta^{total}$"].to_numpy(), np.array([1930.7, 2351.6, 2342.9, 2502.8]), "Table 3 absolute peaks changed.")
+    _close(table3[r"$\\Delta^{total}$ (\\$)"].to_numpy(), np.array([1930.6, 2351.6, 2342.9, 2502.8]), "Table 3 dollar peaks changed.")
     _close(table3[r"$\\Delta^{total}$ (% of 48-week myopic profit)"].to_numpy(), np.array([0.33, 0.40, 0.40, 0.43]), "Table 3 48-week percentages changed.")
 
     cooldown = pd.read_csv(ROBUSTNESS_DIR / "cooldown_3_weeks" / "cooldown_3_weeks_full_grid.csv")

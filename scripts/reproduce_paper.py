@@ -7,6 +7,7 @@ expensive.
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -45,11 +46,14 @@ def main() -> None:
     for notebook in NOTEBOOKS:
         stage = time.monotonic()
         print(f"Starting {notebook}", flush=True)
-        run([
+        command = [
             sys.executable, "-m", "jupyter", "nbconvert", "--to", "notebook",
             "--execute", "--inplace", "--ExecutePreprocessor.timeout=-1",
-            str(Path("notebooks") / notebook),
-        ])
+        ]
+        kernel = os.environ.get("PAPER_REPRO_KERNEL")
+        if kernel:
+            command.append(f"--ExecutePreprocessor.kernel_name={kernel}")
+        run(command + [str(Path("notebooks") / notebook)])
         print(f"Completed {notebook} in {time.monotonic() - stage:.1f}s", flush=True)
     run([sys.executable, "scripts/verify_paper_outputs.py"])
     print(f"Completed canonical 01--08 reproduction in {time.monotonic() - started:.1f}s", flush=True)

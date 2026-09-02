@@ -42,8 +42,8 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/Aregars2/dynamic-promotion-planning"
-Issues = "https://github.com/Aregars2/dynamic-promotion-planning/issues"
+Repository = "https://github.com/Aregars2/price-of-extrapolation"
+Issues = "https://github.com/Aregars2/price-of-extrapolation/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

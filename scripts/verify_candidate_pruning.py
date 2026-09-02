@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import sys
+import argparse
 
 import numpy as np
 import pandas as pd
@@ -48,12 +49,37 @@ def verify_system(label: str, system: dict) -> dict[str, object]:
 
 
 def main() -> None:
-    artifact = load_pickle(PROJECT_ROOT / "artifacts" / "policy" / "policy_optimization.pkl")
+    parser = argparse.ArgumentParser(
+        description="Verify exact same-mask candidate pruning for a policy artifact."
+    )
+    parser.add_argument(
+        "--artifact",
+        type=Path,
+        default=PROJECT_ROOT
+        / "artifacts"
+        / "policy"
+        / "empirical_bayes_price_consistent"
+        / "policy_optimization.pkl",
+        help="Policy artifact to audit.",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=PROJECT_ROOT
+        / "results"
+        / "empirical_bayes_price_consistent"
+        / "tables"
+        / "candidate_pruning_exactness.csv",
+        help="CSV path for the exactness audit.",
+    )
+    args = parser.parse_args()
+
+    artifact = load_pickle(args.artifact)
     output = pd.DataFrame([
         verify_system("piN", artifact["naive_schedule_system"]),
         verify_system("piD", artifact["schedule_system"]),
     ])
-    path = PROJECT_ROOT / "results" / "final" / "tables" / "candidate_pruning_exactness.csv"
+    path = args.output
     path.parent.mkdir(parents=True, exist_ok=True)
     output.to_csv(path, index=False)
     print(output.to_string(index=False))

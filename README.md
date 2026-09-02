@@ -2,6 +2,10 @@
 
 This repository is the computational companion to a model-based study of retail promotion calendars using Dominick's cereal scanner data. It compares myopic, displacement-naive forward, and displacement-aware forward policies using common-origin PPML profiles and common behavioral replay.
 
+The repository retains the historical GitHub URL `price-of-extrapolation`; its
+current scientific workflow is dynamic promotion planning under demand
+displacement.
+
 ## Setup and reproduction
 
 Python 3.11+ is required. Raw data are not redistributed; place them in `data/raw/` for a clean reproduction.

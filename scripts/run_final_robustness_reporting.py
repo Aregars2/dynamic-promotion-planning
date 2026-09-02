@@ -120,9 +120,13 @@ def fixed_calendar_uncertainty(artifact: dict) -> tuple[pd.DataFrame, pd.DataFra
         }
         if not np.allclose(contrasts["delta_plan"] + contrasts["delta_disp"], contrasts["delta_total"], atol=1e-8):
             raise AssertionError("Parent-level paired contrasts do not add up.")
+        if not np.isfinite(values["piM"]).all() or (values["piM"] <= 0).any():
+            raise AssertionError("Parent-level 48-week myopic values must be finite and positive.")
+        total_pct = 100.0 * contrasts["delta_total"] / values["piM"]
         for parent_position, parent in enumerate(parent_ids):
             for component, values_by_parent in contrasts.items():
                 long_rows.append({"capacity": capacity, "reimbursement_share": share, "bootstrap_id": int(parent), "component": component, "contrast": float(values_by_parent[parent_position])})
+            long_rows.append({"capacity": capacity, "reimbursement_share": share, "bootstrap_id": int(parent), "component": "delta_total_pct_myopic_48w", "contrast": float(total_pct[parent_position])})
         for component, values_by_parent in contrasts.items():
             p05, p50, p95 = _quantile(values_by_parent, [0.05, 0.50, 0.95])
             summary_rows.append({
@@ -131,6 +135,14 @@ def fixed_calendar_uncertainty(artifact: dict) -> tuple[pd.DataFrame, pd.DataFra
                 "label": "behavioral-parameter uncertainty conditional on the selected calendars",
                 "bootstrap_parents": len(parent_ids),
             })
+        p05, p50, p95 = _quantile(total_pct, [0.05, 0.50, 0.95])
+        summary_rows.append({
+            "capacity": capacity, "reimbursement_share": share,
+            "component": "delta_total_pct_myopic_48w",
+            "p05": float(p05), "p50": float(p50), "p95": float(p95),
+            "label": "behavioral-parameter uncertainty conditional on the selected calendars",
+            "bootstrap_parents": len(parent_ids),
+        })
     return pd.DataFrame(long_rows), pd.DataFrame(summary_rows)
 
 
