@@ -7,7 +7,7 @@ price-consistent promotion-planning workflow.
 The workflow is staged deliberately:
 
 1. inventory raw files using only reconstruction-permitted fields;
-2. document historical design evidence and freeze assignment/window rules;
+2. resolve historical timing and the experiment frame before any assignment;
 3. reconstruct treatments without loading sales, quantity, revenue, or profit;
 4. hash the frozen reconstruction;
 5. conduct causal analysis only after that freeze.
@@ -52,3 +52,13 @@ and remain untracked like other reproducible outputs.
 Historical design facts, their sources, and page references belong in
 `reconstruction_sources.md`. No published outcome estimate may be used to
 select an assignment, window, threshold, or candidate Hyper episode.
+
+## Phase 0B: historical-design resolution
+
+`scripts/experimental_reconstruction/resolve_historical_design.py` converts
+the official week decoder to calendar dates and records what the primary study
+paper independently establishes. It is a gate, not a reconstruction estimator:
+without independently documented calendar timing and the Study 2 26-category
+and 86-store rosters, it leaves the reconstruction blocked. It also preserves
+the unconstrained price-side candidates as diagnostics. In particular, a
+candidate that maps after the 1994 publication cannot be treated as Study 1.
