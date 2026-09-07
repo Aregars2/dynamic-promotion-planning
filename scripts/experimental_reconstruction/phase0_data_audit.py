@@ -20,14 +20,20 @@ from zipfile import ZipFile
 
 import pandas as pd
 
+from dynamic_promotion_planning.experimental_reconstruction import (
+    OUTCOME_FIELDS,
+    RECONSTRUCTION_FIELDS,
+    assert_outcome_blind,
+)
+
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT / "data" / "raw"
 DEFAULT_OUTPUT_DIR = ROOT / "results" / "experimental_reconstruction" / "phase0"
 
 # These are the only movement-file fields permitted during reconstruction.
-ALLOWED_FIELDS = ("STORE", "UPC", "WEEK", "PRICE", "SALE", "OK")
-FORBIDDEN_OUTCOME_FIELDS = frozenset({"MOVE", "QTY", "PROFIT", "PROFIT_HEX"})
+ALLOWED_FIELDS = RECONSTRUCTION_FIELDS
+FORBIDDEN_OUTCOME_FIELDS = OUTCOME_FIELDS
 
 
 @dataclass
@@ -92,6 +98,7 @@ def audit_archive(archive: Path, chunk_rows: int) -> CategoryAudit:
         with handle.open(member) as raw_file:
             header = raw_file.readline().decode("latin-1").strip().split(",")
     schema = tuple(header)
+    assert_outcome_blind(ALLOWED_FIELDS)
     forbidden = FORBIDDEN_OUTCOME_FIELDS.intersection(schema)
     if not forbidden.issuperset({"MOVE", "QTY", "PROFIT"}):
         raise ValueError(f"Unexpected movement schema in {archive.name}: {schema!r}")

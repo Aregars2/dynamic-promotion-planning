@@ -17,6 +17,14 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from dynamic_promotion_planning.experimental_reconstruction import (
+    HistoricalConstraints,
+    assert_outcome_blind,
+    candidate_diagnostics,
+    cross_category_agreement,
+    read_historical_evidence,
+)
+
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT / "data" / "raw"
@@ -48,6 +56,7 @@ def checked_reader(archive: Path, chunksize: int) -> pd.io.parsers.TextFileReade
     """Return an explicit allow-list reader; outcomes cannot enter memory."""
     from zipfile import ZipFile
 
+    assert_outcome_blind(ALLOWED_FIELDS)
     member = movement_member(archive)
     with ZipFile(archive) as handle:
         with handle.open(member) as raw:
@@ -125,9 +134,11 @@ def window_deltas(index: pd.DataFrame, start: int, value: str) -> pd.Series:
     return joined.mean_after - joined.mean_before
 
 
-def rank_cereal_windows(index: pd.DataFrame) -> pd.DataFrame:
+def rank_cereal_windows(index: pd.DataFrame, allowed_starts: set[int] | None = None) -> pd.DataFrame:
     records: list[dict[str, float | int]] = []
     for start in range(WINDOW_WEEKS + 1, int(index.WEEK.max()) - WINDOW_WEEKS + 2):
+        if allowed_starts is not None and start not in allowed_starts:
+            continue
         delta = window_deltas(index, start, "mean_regular_log_price").dropna()
         if len(delta) < 40:
             continue
@@ -193,13 +204,16 @@ def precompute_category_deltas(indices: pd.DataFrame) -> dict[tuple[int, str], p
 
 
 def study2_candidate_windows(
-    cache: dict[tuple[int, str], pd.Series], categories: list[str], min_categories: int = 12
+    cache: dict[tuple[int, str], pd.Series], categories: list[str], min_categories: int = 12,
+    allowed_starts: set[int] | None = None,
 ) -> tuple[pd.DataFrame, dict[int, pd.DataFrame]]:
     """Rank cached price-side windows without selecting a final Study 2 window."""
     records: list[dict[str, float | int]] = []
     category_store_deltas: dict[int, pd.DataFrame] = {}
     starts = sorted({start for start, category in cache if category in categories})
     for start in starts:
+        if allowed_starts is not None and start not in allowed_starts:
+            continue
         parts: list[pd.DataFrame] = []
         for category in categories:
             delta = cache.get((start, category))
@@ -226,10 +240,14 @@ def study2_candidate_windows(
     return ranked, category_store_deltas
 
 
-def leave_one_category_out(cache: dict[tuple[int, str], pd.Series], all_categories: list[str]) -> pd.DataFrame:
+def leave_one_category_out(
+    cache: dict[tuple[int, str], pd.Series], all_categories: list[str], allowed_starts: set[int] | None = None,
+) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
     for excluded in all_categories:
-        ranked, _ = study2_candidate_windows(cache, [category for category in all_categories if category != excluded])
+        ranked, _ = study2_candidate_windows(
+            cache, [category for category in all_categories if category != excluded], allowed_starts=allowed_starts
+        )
         best = ranked.iloc[0]
         rows.append({"excluded_category_code": excluded, "price_only_candidate_start_week": int(best.candidate_start_week), "price_only_candidate_end_week": int(best.candidate_end_week), "score": float(best.score), "selection_status": "not_frozen"})
     return pd.DataFrame(rows)
@@ -276,6 +294,10 @@ def main() -> None:
     parser.add_argument("--raw-dir", type=Path, default=RAW_DIR)
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     parser.add_argument("--chunk-rows", type=int, default=250_000)
+    parser.add_argument(
+        "--historical-evidence", type=Path,
+        help="Structured, outcome-independent evidence. When supplied, both Study 1 and Study 2 require documented calendar windows.",
+    )
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -287,8 +309,19 @@ def main() -> None:
     if cereal_archive is None:
         raise ValueError("Cereal archive code 'cer' was not found.")
 
+    constraints: HistoricalConstraints | None = None
+    study1_allowed: set[int] | None = None
+    study2_allowed: set[int] | None = None
+    if args.historical_evidence is not None:
+        constraints = read_historical_evidence(args.historical_evidence)
+        study1_allowed = constraints.admissible_starts("Study 1", WINDOW_WEEKS)
+        study2_allowed = constraints.admissible_starts("Study 2", WINDOW_WEEKS)
+        if study1_allowed is None or study2_allowed is None:
+            raise ValueError("Externally supplied evidence must document admissible calendar windows for both Study 1 and Study 2.")
+
     cereal_index, bonus_buy = price_indices(cereal_archive, args.chunk_rows, collect_bonus_buy=True)
-    cereal_windows = rank_cereal_windows(cereal_index)
+    cereal_windows = rank_cereal_windows(cereal_index, allowed_starts=study1_allowed)
+    cereal_windows = candidate_diagnostics(cereal_windows, study="Study 1", constraints=constraints, window_weeks=WINDOW_WEEKS)
     cereal_windows.to_csv(args.output_dir / "study1_window.csv", index=False)
     study1_start = int(cereal_windows.iloc[0].candidate_start_week)
     study1_delta = window_deltas(cereal_index, study1_start, "mean_regular_log_price").dropna()
@@ -310,7 +343,8 @@ def main() -> None:
     study2_indices = pd.concat(all_indices, ignore_index=True).rename(columns={"store": "STORE"})
     all_categories = sorted(study2_indices.category_code.unique())
     delta_cache = precompute_category_deltas(study2_indices)
-    study2_windows, category_deltas = study2_candidate_windows(delta_cache, all_categories)
+    study2_windows, category_deltas = study2_candidate_windows(delta_cache, all_categories, allowed_starts=study2_allowed)
+    study2_windows = candidate_diagnostics(study2_windows, study="Study 2", constraints=constraints, window_weeks=WINDOW_WEEKS)
     study2_windows.to_csv(args.output_dir / "study2_window.csv", index=False)
     study2_start = int(study2_windows.iloc[0].candidate_start_week)
     category_evidence = category_deltas[study2_start]
@@ -324,8 +358,9 @@ def main() -> None:
     category_evidence = category_evidence.merge(study2_assignments[["store", "price_evidence"]], on="store", how="left")
     category_evidence["frame_status"] = "unresolved"
     category_evidence.to_csv(args.output_dir / "study2_store_category_evidence.csv", index=False)
+    cross_category_agreement(category_evidence).to_csv(args.output_dir / "study2_cross_category_agreement.csv", index=False)
     category_evidence.groupby("category_code", as_index=False).agg(n_stores=("store", "nunique"), median_log_price_shift=("log_price_shift", "median"), price_shift_sd=("log_price_shift", "std")).assign(frame_status="unresolved").to_csv(args.output_dir / "study2_category_consensus.csv", index=False)
-    leave_one_category_out(delta_cache, all_categories).to_csv(args.output_dir / "study2_assignment_robustness.csv", index=False)
+    leave_one_category_out(delta_cache, all_categories, allowed_starts=study2_allowed).to_csv(args.output_dir / "study2_assignment_robustness.csv", index=False)
 
     hyper = study2_assignments[["store", "frame_status"]].copy()
     hyper["hyper_assignment"] = "unresolved"

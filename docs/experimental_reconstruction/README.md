@@ -62,3 +62,19 @@ without independently documented calendar timing and the Study 2 26-category
 and 86-store rosters, it leaves the reconstruction blocked. It also preserves
 the unconstrained price-side candidates as diagnostics. In particular, a
 candidate that maps after the 1994 publication cannot be treated as Study 1.
+
+## Parameterized reconstruction and freeze tooling
+
+`historical_evidence_template.csv` is the required input schema for externally
+documented dates, roster membership, and independently documented assignment.
+`run_price_side_reconstruction.py --historical-evidence PATH` accepts it and
+requires documented admissible windows for both Study 1 and Study 2. It never
+uses published outcome effects or completes labels to target counts.
+
+`write_price_side_diagnostics.py` creates separate coverage, ambiguity,
+cross-category-agreement, and leave-one-category-out tables without modifying
+the existing candidate files. `phase4_freeze.py` hashes a proposed evidence and
+label package and only reports `passed` when independently sourced, complete
+26-category/86-store membership is present. `phase5_causal_analysis.py` first
+requires that passed manifest and otherwise fails before any outcome reader can
+be reached.

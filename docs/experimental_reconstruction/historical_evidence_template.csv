@@ -1,0 +1,4 @@
+evidence_id,study,evidence_type,source,locator,documented_start_date,documented_end_date,unit_type,unit_id,frame_status,assignment,confidence,independent_of_outcomes,count_implied
+example-study1-window,Study 1,calendar_window,PRIMARY_SOURCE_URL_OR_CITATION,page/table,YYYY-MM-DD,YYYY-MM-DD,window,study1,,,,high,true,false
+example-study2-category,Study 2,membership,PRIMARY_SOURCE_URL_OR_CITATION,page/table,,,category,three_letter_code,in_frame,,high,true,false
+example-study2-store,Study 2,membership,PRIMARY_SOURCE_URL_OR_CITATION,page/table,,,store,store_id,in_frame,,high,true,false
