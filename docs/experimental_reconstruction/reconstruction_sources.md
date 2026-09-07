@@ -14,3 +14,12 @@ effects are external validation only and cannot be used for reconstruction.
 The entries above identify sources, not frozen reconstruction choices. Exact
 page references and interpretations must be verified from primary documents
 before Phase 1 begins.
+
+## Required Study 2 frame evidence
+
+The reconstruction must maintain a separate, source-backed membership table
+for the historical 26 categories and 86 stores. The complete set of 28 public
+movement archives is an evidence universe, not an inferred treatment frame.
+For each category and store, the table must record `in_frame`, `out_of_frame`,
+or `unresolved`, its supporting design source or price-side evidence, and
+whether the classification depends on published group-count completion.

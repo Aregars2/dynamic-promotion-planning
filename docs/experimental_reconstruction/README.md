@@ -12,6 +12,27 @@ The workflow is staged deliberately:
 4. hash the frozen reconstruction;
 5. conduct causal analysis only after that freeze.
 
+## Study 2 evidence universe versus experimental frame
+
+All 28 publicly available movement-category archives are retained as the
+evidence universe for the Study 2 reconstruction. This does **not** imply that
+every observed category or store belonged to the historical experiment.
+
+The historical Study 2 experimental frame is a separate object to be
+reconstructed from published design information and price-side evidence only:
+
+- its category membership must identify the historical 26-category frame;
+- its store membership must identify the historical 86-store frame;
+- categories and stores outside that frame remain available for audit,
+  falsification, and negative-control analyses where informative;
+- no outside category or store may receive a Study 2 treatment label merely
+  because it appears in a public movement archive.
+
+The frozen frame must record each category and store as `in_frame`,
+`out_of_frame`, or `unresolved`, with the supporting source/evidence and any
+dependence on published treatment counts. Assignment starts only after this
+membership table has been frozen.
+
 `scripts/experimental_reconstruction/phase0_data_audit.py` implements the
 first step. Its allow-list excludes `MOVE`, `QTY`, `PROFIT`, and `PROFIT_HEX`.
 Its generated files are placed in `results/experimental_reconstruction/phase0/`
