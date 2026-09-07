@@ -33,6 +33,17 @@ The frozen frame must record each category and store as `in_frame`,
 dependence on published treatment counts. Assignment starts only after this
 membership table has been frozen.
 
+`unresolved` is an admissible final reconstruction status. Neither category nor
+store membership may be forced simply to attain the published 26-category or
+86-store totals. Likewise, EDLP/Control/Hi-Lo labels may not be completed to
+the published 29/29/28 counts unless the row is explicitly marked
+`count_implied` and reported separately from independently reconstructed
+labels.
+
+Before the reconstruction freeze, no code may load `MOVE`, `QTY`, `PROFIT`,
+`PROFIT_HEX`, or published sales/profit treatment-effect estimates. Attempts to
+use those fields must fail rather than silently proceeding.
+
 `scripts/experimental_reconstruction/phase0_data_audit.py` implements the
 first step. Its allow-list excludes `MOVE`, `QTY`, `PROFIT`, and `PROFIT_HEX`.
 Its generated files are placed in `results/experimental_reconstruction/phase0/`

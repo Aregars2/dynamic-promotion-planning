@@ -102,6 +102,9 @@ def audit_archive(archive: Path, chunk_rows: int) -> CategoryAudit:
     audit = CategoryAudit(
         category_code=category_code(member), archive=archive.name, member=member, schema=schema
     )
+    # The explicit allow-list is the outcome firewall. Do not replace it with
+    # a full-file read followed by column selection: that would violate the
+    # reconstruction protocol even if downstream calculations ignored outcomes.
     reader = pd.read_csv(
         archive,
         compression="zip",
